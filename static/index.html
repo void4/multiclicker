@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:;base64,=">
+<title>Multiclicker</title>
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-142188591-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+<style>
+.highlight {
+  background-color: green;
+}
+
+* {
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+.header img {
+  float: right;
+  position: absolute;
+  width: auto;
+  padding: 0;
+}
+
+.header h1 {
+  position: relative;
+}
+
+@media only screen and (max-width: 800px) {
+ body {
+   width: 100%;
+   min-width:100%;
+   margin:0;
+   padding:0;
+ }
+
+ .header img {
+   position: relative;
+ }
+}
+
+.infobutton {
+  font-size:12px;
+  color:white;
+  background-color:rgba(50,50,50,0.2);
+}
+
+
+
+.actionheader {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.core {
+  font-size: 14px;
+  text-align: center;
+}
+
+.bigactionheader {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align:center;
+  background-color:rgba(255,255,255,0.1);
+  padding-top:0;
+  margin-bottom: 10px;
+}
+
+.textcenter {
+    text-align: center;
+}
+
+canvas {
+  top: 0;
+  left: 0;
+  position: absolute;;
+  z-index: -13;
+}
+</style>
+<script type="text/javascript" src="js/socket.io.js"></script>
+<script type="text/javascript" src="js/vue.min.js"></script>
+
+<script>
+/*
+var socket = 1 ? io() : io(":5000");
+
+socket.on('connect', function(){
+
+});
+
+socket.on('event', function(data){
+  console.log(data)
+});
+
+socket.on('json', function(message){
+  //console.log(message)
+  var type = message["type"]
+  var data = message["data"]
+  if (type == "problems") {
+    app.problems = data;
+    app.records = null;
+  } else if (type == "problem") {
+    app.problems = null;
+    app.problem = data;
+    //document.body.style.backgroundImage = `url('img/${app.problem.background}')`;
+  }
+});
+
+socket.on('message', function(data){
+  console.log(data)
+});
+
+socket.on('disconnect', function(){
+
+});
+
+window.addEventListener("beforeunload", function() {
+  console.log("Disconnecting...")
+  socket.disconnect();
+});
+*/
+</script>
+</head>
+<body>
+<canvas id="canvas" width="640" height="480"></canvas>
+<div id="app">
+
+  <div v-if="env" data-step="3" data-intro="This is your inventory">
+    <h3 class="bigactionheader">World</h3>
+    <div v-for="(value, key) in env">
+      {{key}}: {{value}}
+    </div>
+  </div>
+
+  <div>
+    <h1>Trading</h1>
+    <div>
+      <h2>Markets</h2>
+
+      <div v-for="(market, index) in markets">
+        <button onclick="getMarket(index)"></button>
+      </div>
+    </div>
+
+    <div>
+      <h2>Market</h2>
+
+      <div>
+        <h3 class="bigactionheader">Orders</h3>
+
+        <div>
+          <h4 class="bigactionheader">Sells</h4>
+          <div v-for="(order, index) in buys">
+            {{order.price}} {{order.volume}}
+            <button v-if="order.own" onclick="cancelOrder(order.id)"></button>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="bigactionheader">Buys</h4>
+          <!--Collate-->
+          <div v-for="(order, index) in buys">
+            {{order.price}} {{order.volume}}
+            <button v-if="order.own" onclick="cancelOrder(order.id)"></button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="bigactionheader">Chart</h3>
+      </div>
+
+      <div>
+        <h3 class="bigactionheader">Order</h3>
+        <div>
+          <h4>Place order</h4>
+          <input type="radio" v-model="bos" id="buy" value="buy"><label for="buy">Buy</label></input>
+          <input type="radio" v-model="bos" id="sell" value="sell"><label for="sell">Sell</label></input>
+          <br>
+          <select v-model="ordertype">
+            <!--<option disabled value="">Please select one</option>-->
+            <option>Limit</option>
+            <option>Market</option>
+          </select>Type
+          <br>
+          <input type="text">Volume</input><br>
+          <div v-if="ordertype=='Limit'">
+            <input type="text">Price</input><br>
+            <input type="text">Cost</input><br>
+          </div>
+          <div v-if="ordertype=='Market'">
+            <input type="text" disabled>Estimated Price</input><br>
+            <input type="text" disabled>Estimated Cost</input><br>
+          </div>
+          <button>Submit</button><br>
+        </div>
+
+        <div>
+          <h4>My orders</h4>
+          <div v-for="(order, index) in orders">
+            <button onclick="cancelOrder(order.id)">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>
+
+
+<script>
+
+var ctx = document.getElementById("canvas").getContext("2d")
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    env: {},
+    bos: "buy",
+    ordertype: "Market",
+    orders: [],
+    markets: [],
+    buys: [],
+    sells: [],
+  },
+  methods: {
+    decide(name) {
+      socket.emit("json", {"type":"decision", "data":name})
+    },
+  }
+})
+
+
+
+function draw() {
+  ctx.canvas.width  = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+
+  //ctx.drawImage(window["grass"], g1, 0)
+}
+
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    console.log("x: " + x + " y: " + y)
+}
+
+const canvas = document.querySelector('canvas')
+canvas.addEventListener('mousemove', function(e) {
+    //getCursorPosition(canvas, e)
+})
+
+
+
+</script>
+</body>
+</html>
