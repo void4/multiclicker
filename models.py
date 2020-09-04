@@ -1,6 +1,7 @@
 from copy import deepcopy
 from random import randint, shuffle, choice, random, sample
 from collections import defaultdict, Counter
+from math import log
 import json
 
 players = []
@@ -169,10 +170,10 @@ def craft(player, item, number=1):
 def cancelOrder(player, bos, index):
 	player[bos].pop(index)
 
-for i in range(50):
+for i in range(10):
 	player = deepcopy(playerj)
 	player["id"] = i
-	player["inventory"]["clicks"] = randint(0,1000)
+	player["inventory"]["clicks"] = 0#randint(0,1000)
 	players.append(player)
 
 stats = defaultdict(Counter)
@@ -184,7 +185,7 @@ for step in range(1000):
 	for player in sample(players, len(players)):
 		stat["p"+str(player["id"])] = player["inventory"]["clicks"]
 
-		r = random() * 4
+		r = random() * 5
 
 		if r < 0.05:
 			buy(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
@@ -194,7 +195,7 @@ for step in range(1000):
 			buy(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
 		elif r < 0.2:
 			sell(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
-		elif r < 0.25:
+		elif r < 0.4:
 			bos = choice(["buys", "sells"])
 			numorders = len(player[bos])
 			if numorders > 0:
@@ -208,6 +209,9 @@ for step in range(1000):
 			if decision == "click":
 				player["inventory"]["clicks"] += 1
 
+	stat["totalclicks"] = sum([player["inventory"]["clicks"] for player in players])
+	stat["totalfactory"] = sum([player["inventory"].get("factory", 0) for player in players])
+
 	# use volume or cost?
 	#stat["sells"] = getMarket("factory", "sells", "highest")
 	#stat["buys"] =  getMarket("factory", "sells", "highest")
@@ -220,7 +224,8 @@ for player in players:
 
 import matplotlib.pyplot as plt
 #print(stats)
-for name in "tradevolume price".split() + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
+#
+for name in "totalclicks tradevolume price totalfactory".split():# + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
 	print(name)
 	xs = list(range(len(stats)))
 	ys = [stats[i][name] for i in range(len(stats))]
