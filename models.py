@@ -170,15 +170,24 @@ def craft(player, item, number=1):
 def cancelOrder(player, bos, index):
 	player[bos].pop(index)
 
-for i in range(10):
+for i in range(1000):
 	player = deepcopy(playerj)
 	player["id"] = i
 	player["inventory"]["clicks"] = 0#randint(0,1000)
 	players.append(player)
 
+
+def ranking():
+	return sorted(players, key=lambda player:player["inventory"]["clicks"], reverse=True)
+
+
 stats = defaultdict(Counter)
 
+ids = Counter()
+
 for step in range(1000):
+
+	ids[ranking()[0]["id"]] += 1
 
 	stat = stats[step]
 
@@ -225,7 +234,7 @@ for player in players:
 import matplotlib.pyplot as plt
 #print(stats)
 #
-for name in "totalclicks tradevolume price totalfactory".split():# + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
+for name in "totalclicks tradevolume price totalfactory".split() + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
 	print(name)
 	xs = list(range(len(stats)))
 	ys = [stats[i][name] for i in range(len(stats))]
@@ -234,6 +243,8 @@ for name in "totalclicks tradevolume price totalfactory".split():# + ["p"+str(pl
 			xs.pop(i)
 			ys.pop(i)
 	plt.plot(xs, ys, label=name)
+
+print(ids)
 
 plt.legend()
 plt.show()
