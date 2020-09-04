@@ -1,5 +1,6 @@
 from copy import deepcopy
 from random import randint, shuffle, choice, random, sample
+from collections import defaultdict, Counter
 import json
 
 players = []
@@ -77,7 +78,7 @@ def buy(player, d):
 		# kinda doesnt work if money lost in the meantime, but hey
 
 		if cost + outstanding_buys <= player["inventory"].get("clicks", 0):
-			print("BUY")
+			#print("BUY ORDER")
 			#pre-deduct?
 			#inventory["clicks"] -= cost
 
@@ -95,17 +96,22 @@ def getMarket(item, bos="buy", sort="lowest"):
 
 def exchange(a, b, item, volume, price):
 	"""a gets items, b gets money"""
+	global stat
 	# Check a==b? -> can currently hit own orders
 	cost = volume*price
 
 	if cost <= 0:
 		return False
 
+	# All or nothing
 	if a["inventory"].get("clicks", 0) >= cost and b["inventory"].get(item, 0) >= volume:
 		a["inventory"]["clicks"] -= cost
 		b["inventory"]["clicks"] += cost
 		b["inventory"][item] = b["inventory"].get(item, 0) - volume
 		a["inventory"][item] = a["inventory"].get(item, 0) + volume
+
+		stat["tradevolume"] += cost
+		stat["price"] = price
 
 		return True
 
@@ -139,7 +145,7 @@ def sell(player, d):
 		outstanding_sells = sum([order["volume"] for order in player["buys"] if order["item"] == d["item"]])
 
 		if d["volume"] + outstanding_sells <= player["inventory"].get(d["item"], 0):
-			print("SELL")
+			#print("SELL ORDER")
 			player["sells"].append(d)
 
 def clearOldOrders():
@@ -165,12 +171,18 @@ def cancelOrder(player, bos, index):
 
 for i in range(2):
 	player = deepcopy(playerj)
+	player["id"] = i
 	player["inventory"]["clicks"] = randint(0,1000)
 	players.append(player)
 
-for i in range(1000):
+stats = defaultdict(Counter)
+
+for step in range(1000):
+
+	stat = stats[step]
 
 	for player in sample(players, len(players)):
+		stat["player"+str(player["id"])] = player["inventory"]["clicks"]
 
 		r = random() * 4
 
@@ -189,14 +201,33 @@ for i in range(1000):
 				index = randint(0, numorders-1)
 				cancelOrder(player, bos, index)
 		elif r < 0.8:
-			craft(player, "factory", randint(1,5))
+			craft(player, choice(list(craftable.keys())), randint(1,5))
 		else:
 			decision = player["default_action"]
 			if decision == "click":
 				player["inventory"]["clicks"] += 1
 
-#sell(players[0], {"type":"market", "item":"factory", "volume":5})
+	# use volume or cost?
+	#stat["sells"] = getMarket("factory", "sells", "highest")
+	#stat["buys"] =  getMarket("factory", "sells", "highest")
 
+"""
 for player in players:
 	#print(json.dumps(player, indent=4))
 	print(len(player["buys"]), player["inventory"])
+"""
+
+import matplotlib.pyplot as plt
+#print(stats)
+for name in "tradevolume p0 p1 price".split():#stats[-1].keys():
+	print(name)
+	xs = list(range(len(stats)))
+	ys = [stats[i][name] for i in range(len(stats))]
+	for i in range(len(ys)-1, -1, -1):
+		if ys[i] == 0:
+			xs.pop(i)
+			ys.pop(i)
+	plt.plot(xs, ys, label=name)
+
+plt.legend()
+plt.show()
