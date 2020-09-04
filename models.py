@@ -53,6 +53,9 @@ def buy(player, d):
 	if d["type"] in ["market", "limit"]:
 		for trader, order in getMarket(d["item"], "sells", "lowest"):
 
+			if d["type"] == "limit" and order["price"] > d["price"]:
+				break
+
 			volumedelta = min(order["volume"], d["volume"])
 
 			if exchange(player, trader, d["item"], volumedelta, order["price"]):
@@ -74,6 +77,7 @@ def buy(player, d):
 		# kinda doesnt work if money lost in the meantime, but hey
 
 		if cost + outstanding_buys <= player["inventory"].get("clicks", 0):
+			print("BUY")
 			#pre-deduct?
 			#inventory["clicks"] -= cost
 
@@ -86,13 +90,18 @@ def getMarket(item, bos="buy", sort="lowest"):
 			if order["item"] == item:
 				 market.append([player, order])
 
+	# TODO: sort same-price orders by longest standing
 	return sorted(market, key=lambda op: op[1]["price"], reverse=sort=="highest")
 
 def exchange(a, b, item, volume, price):
 	"""a gets items, b gets money"""
 	# Check a==b? -> can currently hit own orders
 	cost = volume*price
-	if a["inventory"].get("clicks", 0) >= cost and b["inventory"][item] >= volume:
+
+	if cost <= 0:
+		return False
+
+	if a["inventory"].get("clicks", 0) >= cost and b["inventory"].get(item, 0) >= volume:
 		a["inventory"]["clicks"] -= cost
 		b["inventory"]["clicks"] += cost
 		b["inventory"][item] = b["inventory"].get(item, 0) - volume
@@ -109,6 +118,9 @@ def sell(player, d):
 
 	if d["type"] in ["market", "limit"]:
 		for trader, order in getMarket(d["item"], "buys", "highest"):
+
+			if d["type"] == "limit" and order["price"] < d["price"]:
+				break
 
 			volumedelta = min(order["volume"], d["volume"])
 
@@ -127,6 +139,7 @@ def sell(player, d):
 		outstanding_sells = sum([order["volume"] for order in player["buys"] if order["item"] == d["item"]])
 
 		if d["volume"] + outstanding_sells <= player["inventory"].get(d["item"], 0):
+			print("SELL")
 			player["sells"].append(d)
 
 def clearOldOrders():
@@ -155,27 +168,28 @@ for i in range(2):
 	player["inventory"]["clicks"] = randint(0,1000)
 	players.append(player)
 
-for i in range(100):
+for i in range(1000):
 
 	for player in sample(players, len(players)):
-		craft(player, "factory", 5)
 
-		r = random()
+		r = random() * 4
 
-		if r < 0.1:
-			buy(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(10, 20)})
-		if r < 0.2:
-			sell(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
-		elif r < 0.3:
+		if r < 0.05:
+			buy(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
+		elif r < 0.1:
+			sell(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(10, 20)})
+		elif r < 0.15:
 			buy(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
-		elif r < 0.4:
+		elif r < 0.2:
 			sell(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
-		elif r < 0.6:
+		elif r < 0.25:
 			bos = choice(["buys", "sells"])
 			numorders = len(player[bos])
 			if numorders > 0:
 				index = randint(0, numorders-1)
 				cancelOrder(player, bos, index)
+		elif r < 0.8:
+			craft(player, "factory", randint(1,5))
 		else:
 			decision = player["default_action"]
 			if decision == "click":
@@ -184,4 +198,5 @@ for i in range(100):
 #sell(players[0], {"type":"market", "item":"factory", "volume":5})
 
 for player in players:
-	print(json.dumps(player, indent=4))
+	#print(json.dumps(player, indent=4))
+	print(len(player["buys"]), player["inventory"])
