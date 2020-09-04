@@ -31,13 +31,13 @@ for step in range(1000):
 		r = random() * 5
 
 		if r < 0.05:
-			world.buy(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
+			world.trade(player, "buy", {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
 		elif r < 0.1:
-			world.sell(player, {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(10, 20)})
+			world.trade(player, "sell", {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(10, 20)})
 		elif r < 0.15:
-			world.buy(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
+			world.trade(player, "buy", {"type":"market", "item":"factory", "volume":randint(1,5)})
 		elif r < 0.2:
-			world.sell(player, {"type":"market", "item":"factory", "volume":randint(1,5)})
+			world.trade(player, "sell", {"type":"market", "item":"factory", "volume":randint(1,5)})
 		elif r < 0.4:
 			bos = choice(["buys", "sells"])
 			numorders = len(player[bos])
