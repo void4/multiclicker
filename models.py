@@ -62,7 +62,10 @@ def buy(player, d):
 				if order["volume"] == 0:
 					trader["sells"].remove(order)
 
-	if d["type"] == "limit":
+				if d["volume"] == 0:
+					break
+
+	if d["type"] == "limit" and d["volume"] > 0:
 
 		#buy/sell only in clicks? works in eve, but there credits arent mined
 		outstanding_buys = sum([order["price"]*order["volume"] for order in player["buys"]])
@@ -116,7 +119,10 @@ def sell(player, d):
 				if order["volume"] == 0:
 					trader["buys"].remove(order)
 
-	if d["type"] == "limit":
+				if d["volume"] == 0:
+					break
+
+	if d["type"] == "limit" and d["volume"] > 0:
 
 		outstanding_sells = sum([order["volume"] for order in player["buys"] if order["item"] == d["item"]])
 
@@ -138,7 +144,8 @@ def craft(player, item, number=1):
 	if require(player, rmultiply(craft[0], number)):
 		player["inventory"][item] = player["inventory"].get(item, 0) + number
 	else:
-		print("insufficient resources")
+		pass
+		#print("insufficient resources")
 
 def cancelOrder(player, bos, index):
 	player[bos].pop(index)
