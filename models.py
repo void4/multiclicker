@@ -169,7 +169,7 @@ def craft(player, item, number=1):
 def cancelOrder(player, bos, index):
 	player[bos].pop(index)
 
-for i in range(2):
+for i in range(50):
 	player = deepcopy(playerj)
 	player["id"] = i
 	player["inventory"]["clicks"] = randint(0,1000)
@@ -182,7 +182,7 @@ for step in range(1000):
 	stat = stats[step]
 
 	for player in sample(players, len(players)):
-		stat["player"+str(player["id"])] = player["inventory"]["clicks"]
+		stat["p"+str(player["id"])] = player["inventory"]["clicks"]
 
 		r = random() * 4
 
@@ -201,7 +201,8 @@ for step in range(1000):
 				index = randint(0, numorders-1)
 				cancelOrder(player, bos, index)
 		elif r < 0.8:
-			craft(player, choice(list(craftable.keys())), randint(1,5))
+			if step > 0 and stats[step-1]["price"] > 10 or stats[step-1]["tradevolume"] < 1:
+				craft(player, choice(list(craftable.keys())), randint(1,5))
 		else:
 			decision = player["default_action"]
 			if decision == "click":
@@ -219,7 +220,7 @@ for player in players:
 
 import matplotlib.pyplot as plt
 #print(stats)
-for name in "tradevolume p0 p1 price".split():#stats[-1].keys():
+for name in "tradevolume price".split() + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
 	print(name)
 	xs = list(range(len(stats)))
 	ys = [stats[i][name] for i in range(len(stats))]
