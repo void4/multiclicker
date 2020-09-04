@@ -233,7 +233,8 @@ for player in players:
 
 import matplotlib.pyplot as plt
 #print(stats)
-#
+
+"""
 for name in "totalclicks tradevolume price totalfactory".split() + ["p"+str(player["id"]) for player in players]:#stats[-1].keys():
 	print(name)
 	xs = list(range(len(stats)))
@@ -243,6 +244,8 @@ for name in "totalclicks tradevolume price totalfactory".split() + ["p"+str(play
 			xs.pop(i)
 			ys.pop(i)
 	plt.plot(xs, ys, label=name)
+"""
+plt.plot(list(range(len(ids))), list([x[1] for x in ids.most_common()]))
 
 print(ids)
 
