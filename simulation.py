@@ -17,6 +17,16 @@ for i in range(100):
 
 ids = Counter()
 
+def randomItem():
+	return choice(list(craftable.keys()))
+
+def randomInventoryItem(player):
+	inventory = [key for key, value in player["inventory"].items() if value > 0]
+	if not inventory:
+		return
+
+	return choice(inventory)
+
 for step in range(1000):
 
 	ids[world.ranking()[0]["id"]] += 1
@@ -31,13 +41,17 @@ for step in range(1000):
 		r = random() * 5
 
 		if r < 0.05:
-			world.trade(player, "buy", {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(5, 15)})
+			world.trade(player, "buy", {"type":"limit", "item":randomItem(), "volume":randint(1, 5), "price": randint(5, 15)})
 		elif r < 0.1:
-			world.trade(player, "sell", {"type":"limit", "item":"factory", "volume":randint(1, 5), "price": randint(10, 20)})
+			item = randomInventoryItem(player)
+			if item:
+				world.trade(player, "sell", {"type":"limit", "item":item, "volume":randint(1, 5), "price": randint(10, 20)})
 		elif r < 0.15:
-			world.trade(player, "buy", {"type":"market", "item":"factory", "volume":randint(1,5)})
+			world.trade(player, "buy", {"type":"market", "item":randomItem(), "volume":randint(1,5)})
 		elif r < 0.2:
-			world.trade(player, "sell", {"type":"market", "item":"factory", "volume":randint(1,5)})
+			item = randomInventoryItem(player)
+			if item:
+				world.trade(player, "sell", {"type":"market", "item":item, "volume":randint(1,5)})
 		elif r < 0.4:
 			bos = choice(["buys", "sells"])
 			numorders = len(player[bos])
@@ -53,7 +67,8 @@ for step in range(1000):
 				player["inventory"]["clicks"] += 1
 
 	stat["totalclicks"] = sum([player["inventory"]["clicks"] for player in world.players])
-	stat["totalfactory"] = sum([player["inventory"].get("factory", 0) for player in world.players])
+	for item in craftable:
+		stat["total"+item] = sum([player["inventory"].get(item, 0) for player in world.players])
 
 	# use volume or cost?
 	#stat["sells"] = getMarket("factory", "sells", "highest")
@@ -68,7 +83,7 @@ for player in world.players:
 import matplotlib.pyplot as plt
 #print(stats)
 
-for name in "totalclicks tradevolume price totalfactory".split() + ["p"+str(player["id"]) for player in world.players]:#stats[-1].keys():
+for name in "totalclicks tradevolume price".split() + ["total"+item for item in craftable] + ["p"+str(player["id"]) for player in world.players]:#stats[-1].keys():
 	print(name)
 	xs = list(range(len(world.stats)))
 	ys = [world.stats[i][name] for i in range(len(world.stats))]

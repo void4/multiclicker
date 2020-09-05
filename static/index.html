@@ -146,10 +146,14 @@ window.addEventListener("beforeunload", function() {
 <div id="app">
 
   <div v-if="env" data-step="3" data-intro="This is your inventory">
-    <h3 class="bigactionheader">World</h3>
+    <h1>Inventory</h1>
     <div v-for="(value, key) in env">
       {{key}}: {{value}}
     </div>
+  </div>
+
+  <div>
+    <h1>Crafting</h1>
   </div>
 
   <div>

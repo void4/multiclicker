@@ -7,3 +7,5 @@ autoclick even offline
 log decisions
 
 collect pixels with cursor?
+
+Nomad?

@@ -22,6 +22,7 @@ playerj = {
 
 craftable = {
 	"factory": [{"clicks":10}, "clicks += 1", ""],
+	"ship": [{"clicks":20}, "clicks += 1", ""],
 }
 
 actions = {
