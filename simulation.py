@@ -27,6 +27,18 @@ def randomInventoryItem(player):
 
 	return choice(inventory)
 
+def getLastStat(name):
+	for i in range(len(world.stats)-1, -1, -1):
+		if name in world.stats[i]:
+			return world.stats[i][name]
+
+def getSumStat(name, lastn):
+	total = 0
+	for i in range(len(world.stats)-1, max(0, len(world.stats)-1-lastn), -1):
+		if name in world.stats[i]:
+			total += world.stats[i][name]
+	return total
+
 for step in range(1000):
 
 	ids[world.ranking()[0]["id"]] += 1
@@ -59,8 +71,10 @@ for step in range(1000):
 				index = randint(0, numorders-1)
 				world.cancelOrder(player, bos, index)
 		elif r < 0.8:
-			if step > 0 and stat["price"] > 10 or stat["tradevolume"] < 1:
-				world.craft(player, choice(list(craftable.keys())), randint(1,5))
+			item = choice(list(craftable.keys()))
+			lastprice = getLastStat("price"+item)
+			if (lastprice is not None and lastprice > craftable[item][0]["clicks"]) or getSumStat("tradevolume", 100) < 1:
+				world.craft(player, item, randint(1,5))
 		else:
 			decision = player["default_action"]
 			if decision == "click":
@@ -83,7 +97,14 @@ for player in world.players:
 import matplotlib.pyplot as plt
 #print(stats)
 
-for name in "totalclicks tradevolume price".split() + ["total"+item for item in craftable] + ["p"+str(player["id"]) for player in world.players]:#stats[-1].keys():
+query = ["totalclicks"]
+for item in craftable:
+	query.extend(["total"+item, "price"+item, "totalvolume"+item])
+
+for player in world.players:
+	query.append("p"+str(player["id"]))
+
+for name in query:
 	print(name)
 	xs = list(range(len(world.stats)))
 	ys = [world.stats[i][name] for i in range(len(world.stats))]
