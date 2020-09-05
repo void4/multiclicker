@@ -53,14 +53,18 @@ for step in range(1000):
 		r = random() * 5
 
 		if r < 0.05:
-			world.trade(player, "buy", {"type":"limit", "item":randomItem(), "volume":randint(1, 5), "price": randint(5, 15)})
+			item = randomItem()
+			cost = craftable[item][0]["clicks"]
+			price = randint(cost//2, int(cost*1.5))
+			world.trade(player, "buy", {"type":"limit", "item":item, "volume":randint(1, 5), "price":price})
 		elif r < 0.1:
 			item = randomInventoryItem(player)
 			if item:
 				world.trade(player, "sell", {"type":"limit", "item":item, "volume":randint(1, 5), "price": randint(10, 20)})
-		elif r < 0.15:
-			world.trade(player, "buy", {"type":"market", "item":randomItem(), "volume":randint(1,5)})
-		elif r < 0.2:
+		elif r < 0.11:
+			item = randomItem()
+			world.trade(player, "buy", {"type":"market", "item":item, "volume":randint(1,5)})
+		elif r < 0.12:
 			item = randomInventoryItem(player)
 			if item:
 				world.trade(player, "sell", {"type":"market", "item":item, "volume":randint(1,5)})
@@ -97,26 +101,44 @@ for player in world.players:
 import matplotlib.pyplot as plt
 #print(stats)
 
-query = ["totalclicks"]
+query1 = []
+query2 = []
+query3 = ["totalclicks"]
 for item in craftable:
-	query.extend(["total"+item, "price"+item, "totalvolume"+item])
+	query1.extend(["price"+item])
+	query2.append("tradevolume"+item)
+	query3.append("total"+item)
 
-for player in world.players:
-	query.append("p"+str(player["id"]))
+#for player in world.players:
+#	query.append("p"+str(player["id"]))
 
-for name in query:
-	print(name)
-	xs = list(range(len(world.stats)))
-	ys = [world.stats[i][name] for i in range(len(world.stats))]
+def removeY0(xs, ys):
 	for i in range(len(ys)-1, -1, -1):
 		if ys[i] == 0:
 			xs.pop(i)
 			ys.pop(i)
-	plt.plot(xs, ys, label=name)
+
+def plot(plt, query, y0=False):
+
+	for name in query:
+		print(name)
+		xs = list(range(len(world.stats)))
+		ys = [world.stats[i][name] for i in range(len(world.stats))]
+
+		if not y0:
+			removeY0(xs, ys)
+
+		plt.plot(xs, ys, label=name)
+		plt.legend()
+
+fig, axes = plt.subplots(nrows=3, ncols=1)
+
+plot(axes[0], query1)
+plot(axes[1], query2, y0=True)
+plot(axes[2], query3)
 
 #plt.plot(list(range(len(ids))), list([x[1] for x in ids.most_common()]))
 
 print(ids)
 
-plt.legend()
 plt.show()

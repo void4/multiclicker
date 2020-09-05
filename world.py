@@ -94,7 +94,7 @@ class World:
 			b["inventory"][item] = b["inventory"].get(item, 0) - volume
 			a["inventory"][item] = a["inventory"].get(item, 0) + volume
 
-			self.stats[-1]["tradevolume+item"] += cost
+			self.stats[-1]["tradevolume"+item] += cost
 			self.stats[-1]["price"+item] = price
 
 			return True
