@@ -22,17 +22,19 @@ def world_tick():
         world.tick()
         for player in world.players:
             if player["online"]:
-                sendj("player", player, room=player["sid"])
+                sendjall("player", player, room=player["sid"])
 
 
 world = World()
 
 def sendjall(typ, j, *args, **kwargs):
-    for player in world.players:
-        sendj(typ, j, room=player["sid"], *args, **kwargs)
+    #for player in world.players:
+    #   sendj(typ, j, room=player["sid"], *args, **kwargs)
+    socketio.send({"type":typ, "data":j}, json=True, *args, **kwargs)
 
 def sendj(typ, j, *args, **kwargs):
-    socketio.send({"type":typ, "data":j}, json=True, *args, **kwargs)
+    room = session["player"]["sid"]
+    socketio.send({"type":typ, "data":j}, json=True, room=room, *args, **kwargs)
 
 @socketio.on('connect')
 def handle_connect():
@@ -74,12 +76,12 @@ def handle_json(j):
     if typ == "login":
         session["player"] = world.getOrCreatePlayer(data["name"])
         if session["player"] is not None:
-            sendj("login", "successful")
             session["player"]["sid"] = request.sid
             session["player"]["online"] = True
-            sendj("markets", list(craftable.keys()), room=session["player"]["sid"])
-            sendj("craftable", craftable, room=session["player"]["sid"])
-            sendj("cities", cities, room=session["player"]["sid"])
+            sendj("login", "successful")
+            sendj("markets", list(craftable.keys()))
+            sendj("craftable", craftable)
+            sendj("cities", cities)
         else:
             sendj("login", "failed")
 
@@ -97,6 +99,7 @@ def handle_json(j):
         player["data"] = data["data"]
 
     elif typ == "market":
+        #why does market update?
         sendMarket(player, data)
 
     elif typ == "order":
