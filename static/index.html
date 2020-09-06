@@ -167,6 +167,8 @@ socket.on('json', function(message){
     app.cities = data;
   } else if (type == "routes") {
     app.routes = data;
+  } else if (type == "items") {
+    app.items = data;
   }
 });
 
@@ -193,6 +195,7 @@ window.addEventListener("beforeunload", function() {
     <div>
       <div>
         <h1 class="header">Inventory</h1>
+        Weight: {{player.weight}}/{{player.capacity}}<br>
         <div v-for="(value, key) in player.inventory">
           {{key}}: {{value}}
           <button v-on:click="store(key)">Store</button>
@@ -345,6 +348,7 @@ var app = new Vue({
     cities: [],
     routes: [],
     storeamount: 1,
+    items: [],
   },
   methods: {
     decide(name) {

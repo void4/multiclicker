@@ -6,6 +6,10 @@ playerj = {
 	"last_online": None,
 	"online": None,
 
+	"baseweightcapacity": 25,
+	"weight": 0,
+	"capacity": 0,
+
 	"inventory": {
 		"clicks": 0,
 	},
@@ -30,11 +34,13 @@ playerj = {
 cities = [
     {"name": "Cairo", "coords": [142,80,50,50],
 	"craftable": {
+		"camel": [{"clicks":100}],
 		"wheat": [{"clicks":1}],
 		"beer": [{"clicks":25}],
 		"knife": [{"clicks":10, "copper":5}],
 		"linen": [{"clicks":150}],
 		"papyrus": [{"clicks":250}],
+		"pouch": [{"clicks":10}],
 		"factory": [{"clicks":1000}],
 	}
 	},
@@ -71,7 +77,29 @@ for city in cities:
 	for item in city["craftable"]:
 		tradeable.add(item)
 
-tradeable = sorted(list(tradeable))
+#tradeable = sorted(list(tradeable))
+#for item in tradeable:
+#	print("\""+item+"\": {\"weight\":},")
+
+tradeable = {
+"beer": {"weight":1},
+"camel": {"weight":0, "capacity":250},
+"copper": {"weight":5},
+"factory": {"weight":10},
+"fish": {"weight":1},
+"gold": {"weight":1},
+"iron": {"weight":5},
+"knife": {"weight":1},
+"lapis lazuli": {"weight":1},
+"linen": {"weight":5},
+"meat": {"weight":3},
+"papyrus": {"weight":5},
+"pouch": {"weight":5, "capacity": 20},
+"ship": {"weight":10},
+"silver": {"weight":1},
+"wheat": {"weight":1},
+
+}
 
 def getCity(name):
 	for city in cities:
@@ -79,8 +107,13 @@ def getCity(name):
 			return city
 
 routes = [
-	["Alexandria", "Cairo", 5],
+	["Alexandria", "Cairo", {"clicks": 10}],
 ]
+
+def getRoute(a, b):
+	for route in routes:
+		if (route[0] == a and route[1] == b) or (route[0] == b and route[1] == a):
+			return route
 
 def rmultiply(req, factor):
 	return {key:value*factor for key, value in req.items()}

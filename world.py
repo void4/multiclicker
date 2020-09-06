@@ -16,6 +16,12 @@ class World:
 		player = deepcopy(playerj)
 		player["id"] = self.pid
 		self.pid += 1
+		player["capacity"] = self.getWeightCapacity(player)
+		for city in cities:
+			name = city["name"]
+			player["storage"][name] = {}
+			player["buys"][name] = []
+			player["sells"][name] = []
 		self.players.append(player)
 		return player
 
@@ -43,16 +49,25 @@ class World:
 		return total
 
 	def require(self, player, d):
-		if all([player["inventory"][key] >= value for key, value in d.items()]):
-			for key, value in d.items():
-				player["inventory"][key] -= value
+		city = player["location"]
+		if all([self.getInventory(player, item)+self.getStorage(player, city, item) >= count for item, count in d.items()]):
+			for item, count in d.items():
+				delta = min(self.getStorage(player, city, item), count)
+
+				if delta > 0:
+					player["storage"][city][item] -= delta
+					count -= delta
+
+				if count > 0:
+					player["inventory"][item] -= count
+
 			return True
 
 		return False
 
 	def trade(self, player, d):
 
-		if d["volume"] <= 0:# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
+		if d["volume"] <= 0 or (d["type"] == "limit" and d["price"] <= 0):# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
 			return
 
 		city = player["location"]
@@ -149,13 +164,29 @@ class World:
 						if order.get("ticks", None) is not None and order["ticks"] <= 0:
 							player[bos].remove(order)
 
-	def craft(self, player, item, number=1):
+	def craft(self, player, item, count=1):
 		craft = getCity(player["location"])["craftable"][item]
-		if self.require(player, rmultiply(craft[0], number)):
-			player["inventory"][item] = self.getInventory(player, item) + number
+
+		"""
+		capacity = self.getWeightCapacity(player)
+		player["capacity"] = capacity
+
+		weight = self.getInventoryWeight(player) + self.getItemWeight(item, count)
+		if weight <= capacity:#Doesn't count capacity of added camels!
+		"""
+
+		if self.require(player, rmultiply(craft[0], count)):
+			#player["inventory"][item] = self.getInventory(player, item) + count
+			player["storage"][player["location"]][item] = self.getStorage(player, player["location"], item) + count
+			#player["weight"] = weight
 		else:
 			pass
 			#print("insufficient resources")
+		"""
+		else:
+			#TODO
+			pass
+		"""
 
 	def cancelOrder(self, player, city, bos, oid):
 		for index, order in enumerate(list(player[bos].get(city, []))):
@@ -172,8 +203,30 @@ class World:
 
 		return player["storage"][city].get(item, 0)
 
+	def getItemWeight(self, item, count):
+		if item == "clicks":
+			return 0
+		return tradeable[item]["weight"]*count
+
+	def getInventoryWeight(self, player):
+		weight = 0
+		for item, count in player["inventory"].items():
+			if item == "clicks":
+				continue
+			weight += tradeable[item]["weight"]*count
+		return weight
+
 	def getInventory(self, player, item):
 		return player["inventory"].get(item, 0)
+
+	def getWeightCapacity(self, player):
+		capacity = player["baseweightcapacity"]
+		for item, count in player["inventory"].items():
+			if item == "clicks":
+				continue
+			if "capacity" in tradeable[item]:
+				capacity += tradeable[item]["capacity"]*count
+		return capacity
 
 	def store(self, player, item, count):
 		has = min(self.getInventory(player, item), count)
@@ -183,13 +236,37 @@ class World:
 				player["storage"][city] = {}
 			player["storage"][city][item] = self.getStorage(player, city, item) + has
 			player["inventory"][item] -= has
+			if player["inventory"][item] == 0:
+				del player["inventory"][item]
+
+			player["weight"] = self.getInventoryWeight(player)
+
 
 	def unstore(self, player, item, count):
 		city = player["location"]
 		has = min(self.getStorage(player, city, item), count)
 		if has > 0:
-			player["storage"][city][item] -= has
-			player["inventory"][item] = self.getInventory(player, item) + has
+
+			capacity = self.getWeightCapacity(player)
+			player["capacity"] = capacity
+
+			weight = self.getInventoryWeight(player) + self.getItemWeight(item, has)
+			if weight <= capacity:#Doesn't count capacity of added camels!
+				player["storage"][city][item] -= has
+				player["inventory"][item] = self.getInventory(player, item) + has
+				player["weight"] = weight
+
+				if player["storage"][city][item] == 0:
+					del player["storage"][city][item]
+
+	def travel(self, player, city):
+		route = getRoute(player["location"], city)
+
+		if self.require(player, route[2]):
+			player["location"] = city
+			return True
+
+		return False
 
 	def tick(self):
 

@@ -85,7 +85,8 @@ def handle_json(j):
             session["player"]["sid"] = request.sid
             session["player"]["online"] = True
             sendj("login", "successful")
-            sendj("markets", tradeable)
+            sendj("items", tradeable)
+            sendj("markets", list(tradeable.keys()))
             sendj("cities", cities)
             sendj("routes", routes)
         else:
@@ -117,8 +118,8 @@ def handle_json(j):
 
     elif typ == "travel":
         if data in [city["name"] for city in cities]:
-            player["location"] = data
-            sendMarket(player, player["market"])
+            if world.travel(player, data):
+                sendMarket(player, player["market"])
 
     elif typ == "store":
         world.store(player, data["item"], data["count"])

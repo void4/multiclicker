@@ -89,3 +89,9 @@ show routes on map
 ship enables direct Hurghada <-> At Tur, also faster along line than land based
 
 camel breeding
+
+allow instant travel with clicks
+
+can only craft and travel with clicks (time)
+
+trade only with gold
