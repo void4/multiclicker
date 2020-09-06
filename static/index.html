@@ -189,21 +189,37 @@ window.addEventListener("beforeunload", function() {
 <canvas id="canvas" width="640" height="480"></canvas>
 <div id="app">
 
-  <div style="display:grid;grid-template-columns:50% 50%;">
+  <div style="display:grid;grid-template-columns:33% 33% 33%;">
     <div>
       <div>
         <h1 class="header">Inventory</h1>
         <div v-for="(value, key) in player.inventory">
           {{key}}: {{value}}
+          <button v-on:click="store(key)">Store</button>
+        </div>
+        Store
+        <input type="radio" v-model="storeamount" id="sa1" value="1"><label for="sa1">1</label></input>
+        <input type="radio" v-model="storeamount" id="sa2" value="10"><label for="sa2">10</label></input>
+        <input type="radio" v-model="storeamount" id="sa3" value="100"><label for="sa3">100</label></input>
+        <input type="radio" v-model="storeamount" id="sa4" value="1000"><label for="sa4">1000</label></input>
+        <input type="radio" v-model="storeamount" id="sa5" value="10000"><label for="sa5">10000</label></input>
+
+      </div>
+
+      <div>
+        <h1 class="header">Storage</h1>
+        <div v-for="(value, key) in player.storage[player.location]">
+          {{key}}: {{value}}
+          <button v-on:click="unstore(key)">Unstore</button>
         </div>
       </div>
 
+    </div>
 
-      <div v-if="cities">
-        <h1 class="header">Crafting</h1>
-        <div v-for="(value, key) in getCurrentCity().craftable">
-          {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
-        </div>
+    <div v-if="cities">
+      <h1 class="header">Crafting</h1>
+      <div v-for="(value, key) in getCurrentCity().craftable">
+        {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
       </div>
     </div>
 
@@ -239,8 +255,8 @@ window.addEventListener("beforeunload", function() {
           <h4 class="bigactionheader">Sells</h4>
           <div v-for="(order, index) in market.sells">
             Price: {{order.price}} Volume: {{order.volume}}
-            <button v-if="order.own" onclick="cancelOrder(order.id)">Cancel</button>
-            <button v-if="!order.own" onclick="acceptOrder(order.id)">Accept</button>
+            <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
+            <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
           </div>
         </div>
 
@@ -249,8 +265,8 @@ window.addEventListener("beforeunload", function() {
           <!--Collate-->
           <div v-for="(order, index) in market.buys">
             Price: {{order.price}} Volume: {{order.volume}}
-            <button v-if="order.own" onclick="cancelOrder(order.id)">Cancel</button>
-            <button v-if="!order.own" onclick="acceptOrder(order.id)">Accept</button>
+            <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
+            <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
           </div>
         </div>
       </div>
@@ -285,12 +301,14 @@ window.addEventListener("beforeunload", function() {
           <button v-on:click="submitOrder()">Submit</button><br>
         </div>
 
+        <!--
         <div>
           <h4>My orders</h4>
           <div v-for="(order, index) in orders">
             <button onclick="cancelOrder(order.id)">Cancel</button>
           </div>
         </div>
+      -->
       </div>
     </div>
 
@@ -326,6 +344,7 @@ var app = new Vue({
     loc: [0, 0, 0],
     cities: [],
     routes: [],
+    storeamount: 1,
   },
   methods: {
     decide(name) {
@@ -373,7 +392,19 @@ var app = new Vue({
     },
     getCurrentCity() {
       return app.getCity(app.player.location)
-    }
+    },
+    store(key) {
+      send("store", {"item":key, "count":parseInt(app.storeamount)})
+    },
+    unstore(key) {
+      send("unstore", {"item":key, "count":parseInt(app.storeamount)})
+    },
+    cancelOrder(bos, oid) {
+      send("cancelOrder", {"bos":bos, "oid":oid})
+    },
+    acceptOrder(bos, oid) {
+      send("acceptOrder", {"bos":bos, "oid":oid})
+    },
   }
 });
 

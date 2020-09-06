@@ -10,6 +10,8 @@ playerj = {
 		"clicks": 0,
 	},
 
+	"storage": {},
+
 	"location": "Cairo",
 	"market": "wheat",
 
@@ -69,7 +71,7 @@ for city in cities:
 	for item in city["craftable"]:
 		tradeable.add(item)
 
-tradeable = list(tradeable)
+tradeable = sorted(list(tradeable))
 
 def getCity(name):
 	for city in cities:

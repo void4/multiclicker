@@ -58,7 +58,7 @@ def sendMarket(player, item):
     buys = world.getMarket(city, item, "buys", "highest")
     buys = [{**order, **{"own":trader==player}} for trader, order in buys]
 
-    sells = world.getMarket(city, item, "sells", "lowest")
+    sells = world.getMarket(city, item, "sells", "highest")
     sells = [{**order, **{"own":trader==player}} for trader, order in sells]
     response = {
         "item":item,
@@ -119,6 +119,16 @@ def handle_json(j):
         if data in [city["name"] for city in cities]:
             player["location"] = data
             sendMarket(player, player["market"])
+
+    elif typ == "store":
+        world.store(player, data["item"], data["count"])
+
+    elif typ == "unstore":
+        world.unstore(player, data["item"], data["count"])
+
+    elif typ == "cancelOrder":
+        world.cancelOrder(player, player["location"], data["bos"], data["oid"])
+        sendMarket(player, player["market"])
 
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)

@@ -8,6 +8,7 @@ class World:
 	def __init__(self):
 		self.ticks = 0
 		self.pid = 0
+		self.oid = 0
 		self.players = []
 		self.stats = []
 
@@ -17,6 +18,10 @@ class World:
 		self.pid += 1
 		self.players.append(player)
 		return player
+
+	def new_oid(self):
+		self.oid += 1
+		return self.oid
 
 	def getOrCreatePlayer(self, name):
 		for player in self.players:
@@ -72,7 +77,7 @@ class World:
 					buyer = trader
 					seller = player
 
-				if self.exchange(buyer, seller, d["item"], volumedelta, order["price"]):
+				if self.exchange(city, buyer, seller, d["item"], volumedelta, order["price"]):
 					order["volume"] -= volumedelta
 					d["volume"] -= volumedelta
 
@@ -90,15 +95,17 @@ class World:
 				cost = d["price"]*d["volume"]
 
 				# kinda doesnt work if money lost in the meantime, but hey
-				if cost + outstanding_buys <= player["inventory"].get("clicks", 0):
+				if cost + outstanding_buys <= self.getStorage(player, city, "clicks"):
 					#pre-deduct?
 					#(successful?) order and tx costs
+					d["oid"] = self.new_oid()
 					player["buys"][city] = player["buys"].get(city, []) + [d]
 
 			else:
 				outstanding_sells = sum([order["volume"] for order in player["buys"] if order["item"] == d["item"]])
 
-				if d["volume"] + outstanding_sells <= player["inventory"].get(d["item"], 0):
+				if d["volume"] + outstanding_sells <= self.getStorage(player, city, d["item"]):
+					d["oid"] = self.new_oid()
 					player["sells"][city] = player["sells"].get(city, []) + [d]
 
 	def getMarket(self, city, item, bos="buy", sort="lowest"):
@@ -111,7 +118,7 @@ class World:
 		# TODO: sort same-price orders by longest standing
 		return sorted(market, key=lambda op: op[1]["price"], reverse=sort=="highest")
 
-	def exchange(self, a, b, item, volume, price):
+	def exchange(self, city, a, b, item, volume, price):
 		"""a gets items, b gets money"""
 		# Check a==b? -> can currently hit own orders
 		cost = volume*price
@@ -120,11 +127,11 @@ class World:
 			return False
 
 		# All or nothing
-		if a["inventory"].get("clicks", 0) >= cost and b["inventory"].get(item, 0) >= volume:
-			a["inventory"]["clicks"] -= cost
-			b["inventory"]["clicks"] += cost
-			b["inventory"][item] = b["inventory"].get(item, 0) - volume
-			a["inventory"][item] = a["inventory"].get(item, 0) + volume
+		if self.getStorage(a, city, "clicks") >= cost and self.getStorage(b, city, item) >= volume:
+			a["storage"][city]["clicks"] -= cost
+			b["storage"][city]["clicks"] += cost
+			b["storage"][city][item] = b["storage"][city].get(item, 0) - volume
+			a["storage"][city][item] = a["storage"][city].get(item, 0) + volume
 
 			self.stats[-1]["tradevolume"+item] += cost
 			self.stats[-1]["price"+item] = price
@@ -145,16 +152,44 @@ class World:
 	def craft(self, player, item, number=1):
 		craft = getCity(player["location"])["craftable"][item]
 		if self.require(player, rmultiply(craft[0], number)):
-			player["inventory"][item] = player["inventory"].get(item, 0) + number
+			player["inventory"][item] = self.getInventory(player, item) + number
 		else:
 			pass
 			#print("insufficient resources")
 
-	def cancelOrder(self, city, player, bos, index):
-		player[bos][city].pop(index)
+	def cancelOrder(self, player, city, bos, oid):
+		for index, order in enumerate(list(player[bos].get(city, []))):
+			if order["oid"] == oid:
+				player[bos][city].pop(index)
+				break
 
 	def ranking(self):
 		return sorted(self.players, key=lambda player:player["inventory"]["clicks"], reverse=True)
+
+	def getStorage(self, player, city, item):
+		if city not in player["storage"]:
+			return 0
+
+		return player["storage"][city].get(item, 0)
+
+	def getInventory(self, player, item):
+		return player["inventory"].get(item, 0)
+
+	def store(self, player, item, count):
+		has = min(self.getInventory(player, item), count)
+		city = player["location"]
+		if has > 0:
+			if city not in player["storage"]:
+				player["storage"][city] = {}
+			player["storage"][city][item] = self.getStorage(player, city, item) + has
+			player["inventory"][item] -= has
+
+	def unstore(self, player, item, count):
+		city = player["location"]
+		has = min(self.getStorage(player, city, item), count)
+		if has > 0:
+			player["storage"][city][item] -= has
+			player["inventory"][item] = self.getInventory(player, item) + has
 
 	def tick(self):
 
