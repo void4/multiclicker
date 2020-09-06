@@ -84,6 +84,11 @@ ga('send', 'pageview');
   background-color:rgba(255,255,255,0.1);
   padding-top:0;
   margin-bottom: 10px;
+  grid-column: 1/4;
+}
+
+.header {
+  grid-column: 1/4;
 }
 
 .textcenter {
@@ -123,8 +128,8 @@ socket.on('json', function(message){
   console.log(type, data)
   if (type == "login") {
     console.log("LOGIN:", data)
-  } else if (type == "data") {
-    app.data = data;
+  } else if (type == "player") {
+    app.player = data;
   } else if (type == "markets") {
     app.markets = data;
   } else if (type == "market") {
@@ -153,9 +158,9 @@ window.addEventListener("beforeunload", function() {
 <canvas id="canvas" width="640" height="480"></canvas>
 <div id="app">
 
-  <div v-if="env" data-step="3" data-intro="This is your inventory">
+  <div>
     <h1>Inventory</h1>
-    <div v-for="(value, key) in env">
+    <div v-for="(value, key) in player.inventory">
       {{key}}: {{value}}
     </div>
   </div>
@@ -164,8 +169,9 @@ window.addEventListener("beforeunload", function() {
     <h1>Crafting</h1>
   </div>
 
-  <div>
-    <h1>Trading</h1>
+  <div style="display:grid;grid-template-columns:10% 90%;grid-auto-flow:row;">
+    <h1 class="header">Trading</h1>
+
     <div>
       <h2>Markets</h2>
 
@@ -174,8 +180,8 @@ window.addEventListener("beforeunload", function() {
       </div>
     </div>
 
-    <div>
-      <h2>Market</h2>
+    <div style="display:grid;grid-template-columns:50% 50%;">
+      <h2 class="header">Market</h2>
 
       <div>
         <h3 class="bigactionheader">Orders</h3>
@@ -204,7 +210,8 @@ window.addEventListener("beforeunload", function() {
         <h3 class="bigactionheader">Chart</h3>
       </div>
 
-      <div>
+      <br>
+      <div style="display:grid;grid-template-columns:100% 50%;">
         <h3 class="bigactionheader">Order</h3>
         <div>
           <h4>Place order</h4>
@@ -248,12 +255,21 @@ function indexOfSmallest(a) {
  return a.indexOf(Math.min.apply(Math, a));
 }
 
+function count(array, el) {
+  var count = 0;
+  for(var i = 0; i < array.length; ++i){
+      if(array[i] == el)
+          count++;
+  }
+  return count;
+}
+
 var ctx = document.getElementById("canvas").getContext("2d")
 
 var app = new Vue({
   el: '#app',
   data: {
-    env: {},
+    player: {},
     bos: "buy",
     orders: [],
     order: {bos: "buy", type: "limit"},
@@ -273,14 +289,17 @@ var app = new Vue({
     },
     orderChange(index) {
       app.loc[index] = new Date().getTime();
-      var smol = indexOfSmallest(app.loc)
 
-      if (smol == 0) {
-        app.order.volume = app.order.cost/app.order.price
-      } else if (smol == 1) {
-        app.order.price = app.order.cost/app.order.volume
-      } else if (smol == 2) {
-        app.order.cost = app.order.volume*app.order.price
+      if (count([app.order.volume, app.order.price, app.order.cost], null) < 2) {
+        var smol = indexOfSmallest(app.loc)
+
+        if (smol == 0) {
+          app.order.volume = app.order.cost/app.order.price
+        } else if (smol == 1) {
+          app.order.price = app.order.cost/app.order.volume
+        } else if (smol == 2) {
+          app.order.cost = app.order.volume*app.order.price
+        }
       }
     }
   }
