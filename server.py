@@ -79,6 +79,7 @@ def handle_json(j):
             session["player"]["online"] = True
             sendj("markets", list(craftable.keys()), room=session["player"]["sid"])
             sendj("craftable", craftable, room=session["player"]["sid"])
+            sendj("cities", cities, room=session["player"]["sid"])
         else:
             sendj("login", "failed")
 

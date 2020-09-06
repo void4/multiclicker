@@ -122,6 +122,11 @@ canvas {
   position: absolute;;
   z-index: -13;
 }
+
+area {
+  display: block;
+  cursor: pointer;
+}
 </style>
 <script type="text/javascript" src="js/socket.io.js"></script>
 <script type="text/javascript" src="js/vue.min.js"></script>
@@ -163,6 +168,8 @@ socket.on('json', function(message){
     app.order.item = data["item"]
   } else if (type == "craftable") {
     app.craftable = data;
+  } else if (type == "cities") {
+    app.cities = data;
   }
 });
 
@@ -185,17 +192,32 @@ window.addEventListener("beforeunload", function() {
 <canvas id="canvas" width="640" height="480"></canvas>
 <div id="app">
 
-  <div>
-    <h1>Inventory</h1>
-    <div v-for="(value, key) in player.inventory">
-      {{key}}: {{value}}
-    </div>
-  </div>
+  <div style="display:grid;grid-template-columns:50% 50%;">
+    <div>
+      <div>
+        <h1 class="header">Inventory</h1>
+        <div v-for="(value, key) in player.inventory">
+          {{key}}: {{value}}
+        </div>
+      </div>
 
-  <div>
-    <h1>Crafting</h1>
-    <div v-for="(value, key) in craftable">
-      {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
+
+      <div>
+        <h1 class="header">Crafting</h1>
+        <div v-for="(value, key) in craftable">
+          {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h1 class="header">Map</h1>
+      <img src="img/overlay.jpg" usemap="#workmap">
+      <map name="workmap">
+        <div v-for="city in cities">
+          <area shape="rect" v-bind:coords="city.coords" v-on:click="travel(city.name)">
+        </div>
+      </map>
     </div>
   </div>
 
@@ -307,6 +329,7 @@ var app = new Vue({
     market: {},
     loc: [0, 0, 0],
     craftable: {},
+    cities: [],
   },
   methods: {
     decide(name) {
@@ -341,6 +364,9 @@ var app = new Vue({
     },
     craft(item) {
       send("craft", {"item":item, "count":1})
+    },
+    travel(city) {
+      send("travel", city)
     }
   }
 })

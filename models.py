@@ -10,9 +10,11 @@ playerj = {
 		"clicks": 0,
 	},
 
+	"location": "Cairo",
+
 	"decision": None,
 	"default_action": "click",
-	"data": None, 
+	"data": None,
 
 	"buys": [],
 
@@ -20,6 +22,14 @@ playerj = {
 
 	"log": []
 }
+
+
+cities = [
+    {"name": "Cairo", "coords": [142,80,190,130]},
+	{"name": "Alexandria", "coords": [10,23,60,73]},
+	{"name": "At Tur", "coords": [258,173,308,223]},
+	{"name": "Aswan", "coords": [224,386,274,436]},
+]
 
 craftable = {
 	"factory": [{"clicks":10}, "clicks += 1", ""],
