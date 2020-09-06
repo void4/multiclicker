@@ -34,7 +34,7 @@ playerj = {
 cities = [
     {"name": "Cairo", "coords": [142,80,50,50],
 	"craftable": {
-		"camel": [{"clicks":100}],
+		"camel": [{"clicks":10}],
 		"wheat": [{"clicks":1}],
 		"beer": [{"clicks":25}],
 		"knife": [{"clicks":10, "copper":5}],

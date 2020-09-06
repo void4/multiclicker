@@ -123,9 +123,11 @@ def handle_json(j):
 
     elif typ == "store":
         world.store(player, data["item"], data["count"])
+        sendj("player", player)
 
     elif typ == "unstore":
         world.unstore(player, data["item"], data["count"])
+        sendj("player", player)
 
     elif typ == "cancelOrder":
         world.cancelOrder(player, player["location"], data["bos"], data["oid"])

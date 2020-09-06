@@ -219,27 +219,39 @@ class World:
 	def getInventory(self, player, item):
 		return player["inventory"].get(item, 0)
 
+	def getItemWeightCapacity(self, item, count):
+		if item == "clicks":
+			return 0
+		if "capacity" in tradeable[item]:
+			return tradeable[item]["capacity"]*count
+		else:
+			return 0
+
 	def getWeightCapacity(self, player):
 		capacity = player["baseweightcapacity"]
 		for item, count in player["inventory"].items():
-			if item == "clicks":
-				continue
-			if "capacity" in tradeable[item]:
-				capacity += tradeable[item]["capacity"]*count
+			capacity += self.getItemWeightCapacity(item, count)
 		return capacity
 
 	def store(self, player, item, count):
+		# TODO storing camel, decrease capacity!!!
 		has = min(self.getInventory(player, item), count)
 		city = player["location"]
 		if has > 0:
 			if city not in player["storage"]:
 				player["storage"][city] = {}
-			player["storage"][city][item] = self.getStorage(player, city, item) + has
-			player["inventory"][item] -= has
-			if player["inventory"][item] == 0:
-				del player["inventory"][item]
 
-			player["weight"] = self.getInventoryWeight(player)
+			weightAfter = self.getInventoryWeight(player) - self.getItemWeight(item, has)
+			capacityAfter = self.getWeightCapacity(player) - self.getItemWeightCapacity(item, has)
+
+			if weightAfter <= capacityAfter:
+				player["storage"][city][item] = self.getStorage(player, city, item) + has
+				player["inventory"][item] -= has
+				if player["inventory"][item] == 0:
+					del player["inventory"][item]
+
+				player["weight"] = weightAfter
+				player["capacity"] = capacityAfter
 
 
 	def unstore(self, player, item, count):
@@ -247,14 +259,13 @@ class World:
 		has = min(self.getStorage(player, city, item), count)
 		if has > 0:
 
-			capacity = self.getWeightCapacity(player)
-			player["capacity"] = capacity
-
-			weight = self.getInventoryWeight(player) + self.getItemWeight(item, has)
-			if weight <= capacity:#Doesn't count capacity of added camels!
+			weightAfter = self.getInventoryWeight(player) + self.getItemWeight(item, has)
+			capacityAfter = self.getWeightCapacity(player) + self.getItemWeightCapacity(item, has)
+			if weightAfter <= capacityAfter:
 				player["storage"][city][item] -= has
 				player["inventory"][item] = self.getInventory(player, item) + has
-				player["weight"] = weight
+				player["weight"] = weightAfter
+				player["capacity"] = capacityAfter
 
 				if player["storage"][city][item] == 0:
 					del player["storage"][city][item]

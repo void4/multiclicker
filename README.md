@@ -92,6 +92,6 @@ camel breeding
 
 allow instant travel with clicks
 
-can only craft and travel with clicks (time)
+can only craft and travel with clicks (time) - can pay less than required but have to wait for travel
 
 trade only with gold
