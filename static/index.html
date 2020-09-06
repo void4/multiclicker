@@ -135,8 +135,11 @@ socket.on('json', function(message){
   } else if (type == "market") {
     app.market = data;
     app.order.price = data["lastprice"]
+    app.order.estprice = data["lastprice"]
     console.log("HERE", data["item"])
     app.order.item = data["item"]
+  } else if (type == "craftable") {
+    app.craftable = data;
   }
 });
 
@@ -167,6 +170,9 @@ window.addEventListener("beforeunload", function() {
 
   <div>
     <h1>Crafting</h1>
+    <div v-for="(value, key) in craftable">
+      {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
+    </div>
   </div>
 
   <div style="display:grid;grid-template-columns:10% 90%;grid-auto-flow:row;">
@@ -276,6 +282,7 @@ var app = new Vue({
     markets: [],
     market: {},
     loc: [0, 0, 0],
+    craftable: {},
   },
   methods: {
     decide(name) {
@@ -288,19 +295,28 @@ var app = new Vue({
       send("order", app.order)
     },
     orderChange(index) {
-      app.loc[index] = new Date().getTime();
+      if (app.order.type=="limit") {
+        app.loc[index] = new Date().getTime();
 
-      if (count([app.order.volume, app.order.price, app.order.cost], null) < 2) {
-        var smol = indexOfSmallest(app.loc)
+        if (count([app.order.volume, app.order.price, app.order.cost], null) < 2) {
+          var smol = indexOfSmallest(app.loc)
 
-        if (smol == 0) {
-          app.order.volume = app.order.cost/app.order.price
-        } else if (smol == 1) {
-          app.order.price = app.order.cost/app.order.volume
-        } else if (smol == 2) {
-          app.order.cost = app.order.volume*app.order.price
+          if (smol == 0) {
+            app.order.volume = app.order.cost/app.order.price
+          } else if (smol == 1) {
+            app.order.price = app.order.cost/app.order.volume
+          } else if (smol == 2) {
+            app.order.cost = app.order.volume*app.order.price
+          }
+        }
+      } else {
+        if (app.order.estprice != null) {
+          app.order.estcost = app.order.volume * app.order.estprice;
         }
       }
+    },
+    craft(item) {
+      send("craft", {"item":item, "count":1})
     }
   }
 })
