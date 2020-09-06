@@ -81,3 +81,5 @@ cartographer
 casting, smithing, sharpening knives, weapons and armor
 
 fake items?
+
+change animated background to fit scene (bazaar, travelling, crafting)

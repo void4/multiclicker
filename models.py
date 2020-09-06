@@ -32,8 +32,20 @@ cities = [
 ]
 
 craftable = {
-	"factory": [{"clicks":10}, "clicks += 1", ""],
-	"ship": [{"clicks":20}, "clicks += 1", ""],
+	"wheat": [{"clicks":1}],
+	"iron": [{"clicks":30}],
+	"copper": [{"clicks":5}],
+	"fish": [{"clicks":10}],
+	"beer": [{"clicks":25}],
+	"meat": [{"clicks":30}],
+	"knife": [{"clicks":10, "copper":5}],
+	"linen": [{"clicks":150}],
+	"lapis lazuli": [{"clicks":200}],
+	"papyrus": [{"clicks":250}],
+	"silver": [{"clicks":250}],
+	"gold": [{"clicks":500}],
+	"factory": [{"clicks":1000}, "clicks += 1", ""],
+	"ship": [{"clicks":2000}, "clicks += 1", ""],
 }
 
 actions = {
