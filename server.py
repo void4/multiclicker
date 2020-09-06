@@ -52,10 +52,13 @@ def handle_message(message):
     print('received message: ' + message)
 
 def sendMarket(player, item):
-    buys = world.getMarket(item, "buys", "highest")
+
+    city = player["location"]
+
+    buys = world.getMarket(city, item, "buys", "highest")
     buys = [{**order, **{"own":trader==player}} for trader, order in buys]
 
-    sells = world.getMarket(item, "sells", "lowest")
+    sells = world.getMarket(city, item, "sells", "lowest")
     sells = [{**order, **{"own":trader==player}} for trader, order in sells]
     response = {
         "item":item,
@@ -115,6 +118,7 @@ def handle_json(j):
     elif typ == "travel":
         if data in [city["name"] for city in cities]:
             player["location"] = data
+            sendMarket(player, player["market"])
 
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)

@@ -50,10 +50,12 @@ class World:
 		if d["volume"] <= 0:# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
 			return
 
+		city = player["location"]
+
 		if d["bos"] == "sell":
-			market = self.getMarket(d["item"], "buys", "highest")
+			market = self.getMarket(city, d["item"], "buys", "highest")
 		else:
-			market = self.getMarket(d["item"], "sells", "lowest")
+			market = self.getMarket(city, d["item"], "sells", "lowest")
 
 		if d["type"] in ["market", "limit"]:
 			for trader, order in market:
@@ -75,7 +77,7 @@ class World:
 					d["volume"] -= volumedelta
 
 					if order["volume"] == 0:
-						trader["sells" if d["bos"] == "buy" else "buys"].remove(order)
+						trader["sells" if d["bos"] == "buy" else "buys"][city].remove(order)
 
 					if d["volume"] == 0:
 						break
@@ -91,18 +93,18 @@ class World:
 				if cost + outstanding_buys <= player["inventory"].get("clicks", 0):
 					#pre-deduct?
 					#(successful?) order and tx costs
-					player["buys"].append(d)
+					player["buys"][city] = player["buys"].get(city, []) + [d]
 
 			else:
 				outstanding_sells = sum([order["volume"] for order in player["buys"] if order["item"] == d["item"]])
 
 				if d["volume"] + outstanding_sells <= player["inventory"].get(d["item"], 0):
-					player["sells"].append(d)
+					player["sells"][city] = player["sells"].get(city, []) + [d]
 
-	def getMarket(self, item, bos="buy", sort="lowest"):
+	def getMarket(self, city, item, bos="buy", sort="lowest"):
 		market = []
 		for player in self.players:
-			for order in player[bos]:
+			for order in player[bos].get(city, []):
 				if order["item"] == item:
 					 market.append([player, order])
 
@@ -135,9 +137,10 @@ class World:
 	def clearOldOrders(self):
 		for player in self.players:
 			for bos in ["buys", "sells"]:
-				for order in list(player[bos]):
-					if order.get("ticks", None) is not None and order["ticks"] <= 0:
-						player[bos].remove(order)
+				for city in list(player[bos]):
+					for order in city:
+						if order.get("ticks", None) is not None and order["ticks"] <= 0:
+							player[bos].remove(order)
 
 	def craft(self, player, item, number=1):
 		craft = getCity(player["location"])["craftable"][item]
@@ -147,8 +150,8 @@ class World:
 			pass
 			#print("insufficient resources")
 
-	def cancelOrder(self, player, bos, index):
-		player[bos].pop(index)
+	def cancelOrder(self, city, player, bos, index):
+		player[bos][city].pop(index)
 
 	def ranking(self):
 		return sorted(self.players, key=lambda player:player["inventory"]["clicks"], reverse=True)

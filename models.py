@@ -17,9 +17,9 @@ playerj = {
 	"default_action": "click",
 	"data": None,
 
-	"buys": [],
+	"buys": {},
 
-	"sells": [],
+	"sells": {},
 
 	"log": []
 }
