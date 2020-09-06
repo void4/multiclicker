@@ -132,11 +132,13 @@ socket.on('json', function(message){
     app.player = data;
   } else if (type == "markets") {
     app.markets = data;
+    if (Object.keys(app.market).length == 0) {
+      app.getMarket(app.markets[0])
+    }
   } else if (type == "market") {
     app.market = data;
     app.order.price = data["lastprice"]
     app.order.estprice = data["lastprice"]
-    console.log("HERE", data["item"])
     app.order.item = data["item"]
   } else if (type == "craftable") {
     app.craftable = data;
@@ -181,8 +183,8 @@ window.addEventListener("beforeunload", function() {
     <div>
       <h2>Markets</h2>
 
-      <div v-for="(market, index) in markets">
-        <button v-on:click="getMarket(market)">{{market}}</button>
+      <div v-for="(marketname, index) in markets">
+        <button v-on:click="getMarket(marketname)" v-bind:class="{highlight: marketname==market.item}">{{marketname}}</button>
       </div>
     </div>
 

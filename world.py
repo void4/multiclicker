@@ -155,6 +155,8 @@ class World:
 
 	def tick(self):
 
+		self.stats.append(Counter())
+
 		print("TICK")
 
 		for player in sample(self.players, len(self.players)):
