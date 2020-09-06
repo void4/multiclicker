@@ -64,7 +64,10 @@ def sendMarket(player, item):
         "lastprice": world.getLastStat("price"+item)
     }
     print(response)
-    sendj("market", response)
+
+    for player in world.players:
+        if player["online"] and player["market"] == item:
+            sendjall("market", response, room=player["sid"])
 
 @socketio.on('json')
 def handle_json(j):
@@ -99,7 +102,7 @@ def handle_json(j):
         player["data"] = data["data"]
 
     elif typ == "market":
-        #why does market update?
+        player["market"] = data
         sendMarket(player, data)
 
     elif typ == "order":

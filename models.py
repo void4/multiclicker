@@ -11,6 +11,7 @@ playerj = {
 	},
 
 	"location": "Cairo",
+	"market": "wheat",
 
 	"decision": None,
 	"default_action": "click",
