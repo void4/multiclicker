@@ -106,7 +106,7 @@ canvas {
 <script type="text/javascript" src="js/vue.min.js"></script>
 
 <script>
-var socket = window.location.hostname == "qewasd.com" ? io("/multisocket") : io(":9999");
+var socket = window.location.hostname == "qewasd.com" ? io({path:"/multisocket/socket.io/"}) : io(":9999");
 
 function send(type, data) {
   socket.emit("json", {"type":type, "data":data})
