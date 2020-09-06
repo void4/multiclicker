@@ -12,6 +12,7 @@ playerj = {
 
 	"decision": None,
 	"default_action": "click",
+	"data": None, 
 
 	"buys": [],
 

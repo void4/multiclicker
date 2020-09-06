@@ -8,6 +8,11 @@ log decisions
 
 collect pixels with cursor?
 
+item identification: is it diamond, fake diamond, nothing etc.
+
+advanced identification skills
+offline/online trained skills, e.g. gem identification expert
+
 Nomad?
 
 mystery items
@@ -74,3 +79,5 @@ https://en.wikipedia.org/wiki/Natural_semantic_metalanguage
 cartographer
 
 casting, smithing, sharpening knives, weapons and armor
+
+fake items?

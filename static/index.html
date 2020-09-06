@@ -101,11 +101,15 @@ canvas {
 <script type="text/javascript" src="js/vue.min.js"></script>
 
 <script>
-/*
-var socket = 1 ? io() : io(":5000");
+var socket = 0 ? io() : io(":9999");
+
+function send(type, data) {
+  socket.emit("json", {"type":type, "data":data})
+}
 
 socket.on('connect', function(){
-
+  var name = "" + new Date().getTime();
+  send("login", {"name":name})
 });
 
 socket.on('event', function(data){
@@ -116,13 +120,18 @@ socket.on('json', function(message){
   //console.log(message)
   var type = message["type"]
   var data = message["data"]
-  if (type == "problems") {
-    app.problems = data;
-    app.records = null;
-  } else if (type == "problem") {
-    app.problems = null;
-    app.problem = data;
-    //document.body.style.backgroundImage = `url('img/${app.problem.background}')`;
+  console.log(type, data)
+  if (type == "login") {
+    console.log("LOGIN:", data)
+  } else if (type == "data") {
+    app.data = data;
+  } else if (type == "markets") {
+    app.markets = data;
+  } else if (type == "market") {
+    app.market = data;
+    app.order.price = data["lastprice"]
+    console.log("HERE", data["item"])
+    app.order.item = data["item"]
   }
 });
 
@@ -138,7 +147,6 @@ window.addEventListener("beforeunload", function() {
   console.log("Disconnecting...")
   socket.disconnect();
 });
-*/
 </script>
 </head>
 <body>
@@ -162,7 +170,7 @@ window.addEventListener("beforeunload", function() {
       <h2>Markets</h2>
 
       <div v-for="(market, index) in markets">
-        <button onclick="getMarket(index)"></button>
+        <button v-on:click="getMarket(market)">{{market}}</button>
       </div>
     </div>
 
@@ -174,18 +182,20 @@ window.addEventListener("beforeunload", function() {
 
         <div>
           <h4 class="bigactionheader">Sells</h4>
-          <div v-for="(order, index) in buys">
-            {{order.price}} {{order.volume}}
-            <button v-if="order.own" onclick="cancelOrder(order.id)"></button>
+          <div v-for="(order, index) in market.sells">
+            Price: {{order.price}} Volume: {{order.volume}}
+            <button v-if="order.own" onclick="cancelOrder(order.id)">Cancel</button>
+            <button v-if="!order.own" onclick="acceptOrder(order.id)">Accept</button>
           </div>
         </div>
 
         <div>
           <h4 class="bigactionheader">Buys</h4>
           <!--Collate-->
-          <div v-for="(order, index) in buys">
-            {{order.price}} {{order.volume}}
-            <button v-if="order.own" onclick="cancelOrder(order.id)"></button>
+          <div v-for="(order, index) in market.buys">
+            Price: {{order.price}} Volume: {{order.volume}}
+            <button v-if="order.own" onclick="cancelOrder(order.id)">Cancel</button>
+            <button v-if="!order.own" onclick="acceptOrder(order.id)">Accept</button>
           </div>
         </div>
       </div>
@@ -198,25 +208,25 @@ window.addEventListener("beforeunload", function() {
         <h3 class="bigactionheader">Order</h3>
         <div>
           <h4>Place order</h4>
-          <input type="radio" v-model="bos" id="buy" value="buy"><label for="buy">Buy</label></input>
-          <input type="radio" v-model="bos" id="sell" value="sell"><label for="sell">Sell</label></input>
+          <input type="radio" v-model="order.bos" id="buy" value="buy"><label for="buy">Buy</label></input>
+          <input type="radio" v-model="order.bos" id="sell" value="sell"><label for="sell">Sell</label></input>
           <br>
-          <select v-model="ordertype">
+          <select v-model="order.type">
             <!--<option disabled value="">Please select one</option>-->
-            <option>Limit</option>
-            <option>Market</option>
+            <option value="limit">Limit</option>
+            <option value="market">Market</option>
           </select>Type
           <br>
-          <input type="text">Volume</input><br>
-          <div v-if="ordertype=='Limit'">
-            <input type="text">Price</input><br>
-            <input type="text">Cost</input><br>
+          <input type="text" v-on:change="orderChange(0)" v-model.number="order.volume" type="number">Volume</input><br>
+          <div v-if="order.type=='limit'">
+            <input type="text" v-on:change="orderChange(1)" v-model.number="order.price" type="number">Price</input><br>
+            <input type="text" v-on:change="orderChange(2)" v-model.number="order.cost" type="number">Cost</input><br>
           </div>
-          <div v-if="ordertype=='Market'">
-            <input type="text" disabled>Estimated Price</input><br>
-            <input type="text" disabled>Estimated Cost</input><br>
+          <div v-if="order.type=='market'">
+            <input type="text" v-model.number="order.estprice" type="number" disabled>Estimated Price</input><br>
+            <input type="text" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
           </div>
-          <button>Submit</button><br>
+          <button v-on:click="submitOrder()">Submit</button><br>
         </div>
 
         <div>
@@ -234,6 +244,10 @@ window.addEventListener("beforeunload", function() {
 
 <script>
 
+function indexOfSmallest(a) {
+ return a.indexOf(Math.min.apply(Math, a));
+}
+
 var ctx = document.getElementById("canvas").getContext("2d")
 
 var app = new Vue({
@@ -241,16 +255,34 @@ var app = new Vue({
   data: {
     env: {},
     bos: "buy",
-    ordertype: "Market",
     orders: [],
+    order: {bos: "buy", type: "limit"},
     markets: [],
-    buys: [],
-    sells: [],
+    market: {},
+    loc: [0, 0, 0],
   },
   methods: {
     decide(name) {
       socket.emit("json", {"type":"decision", "data":name})
     },
+    getMarket(name) {
+      send("market", name)
+    },
+    submitOrder() {
+      send("order", app.order)
+    },
+    orderChange(index) {
+      app.loc[index] = new Date().getTime();
+      var smol = indexOfSmallest(app.loc)
+
+      if (smol == 0) {
+        app.order.volume = app.order.cost/app.order.price
+      } else if (smol == 1) {
+        app.order.price = app.order.cost/app.order.volume
+      } else if (smol == 2) {
+        app.order.cost = app.order.volume*app.order.price
+      }
+    }
   }
 })
 

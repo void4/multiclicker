@@ -1,11 +1,41 @@
 from collections import defaultdict, Counter
+from copy import deepcopy
+from random import sample
 
 from models import *
 
 class World:
 	def __init__(self):
+		self.ticks = 0
+		self.pid = 0
 		self.players = []
 		self.stats = []
+
+	def new_player(self):
+		player = deepcopy(playerj)
+		player["id"] = self.pid
+		self.pid += 1
+		self.players.append(player)
+		return player
+
+	def getOrCreatePlayer(self, name):
+		for player in self.players:
+			if player["name"] == name:
+				return player
+
+		return self.new_player()
+
+	def getLastStat(self, name):
+		for i in range(len(self.stats)-1, -1, -1):
+			if name in self.stats[i]:
+				return self.stats[i][name]
+
+	def getSumStat(self, name, lastn):
+		total = 0
+		for i in range(len(self.stats)-1, max(0, len(self.stats)-1-lastn), -1):
+			if name in self.stats[i]:
+				total += self.stats[i][name]
+		return total
 
 	def require(self, player, d):
 		if all([player["inventory"][key] >= value for key, value in d.items()]):
@@ -15,12 +45,12 @@ class World:
 
 		return False
 
-	def trade(self, player, type, d):
+	def trade(self, player, d):
 
 		if d["volume"] <= 0:# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
 			return
 
-		if type == "sell":
+		if d["bos"] == "sell":
 			market = self.getMarket(d["item"], "buys", "highest")
 		else:
 			market = self.getMarket(d["item"], "sells", "lowest")
@@ -28,12 +58,12 @@ class World:
 		if d["type"] in ["market", "limit"]:
 			for trader, order in market:
 
-				if d["type"] == "limit" and ((type == "buy" and order["price"] > d["price"]) or (type == "sell" and order["price"] < d["price"])):
+				if d["type"] == "limit" and ((d["bos"] == "buy" and order["price"] > d["price"]) or (d["bos"] == "sell" and order["price"] < d["price"])):
 					break
 
 				volumedelta = min(order["volume"], d["volume"])
 
-				if type == "buy":
+				if d["bos"] == "buy":
 					buyer = player
 					seller = trader
 				else:
@@ -45,14 +75,14 @@ class World:
 					d["volume"] -= volumedelta
 
 					if order["volume"] == 0:
-						trader["sells" if type == "buy" else "buys"].remove(order)
+						trader["sells" if d["bos"] == "buy" else "buys"].remove(order)
 
 					if d["volume"] == 0:
 						break
 
 		if d["type"] == "limit" and d["volume"] > 0:
 
-			if type == "buy":
+			if d["bos"] == "buy":
 				#buy/sell only in clicks? works in eve, but there credits arent mined
 				outstanding_buys = sum([order["price"]*order["volume"] for order in player["buys"]])
 				cost = d["price"]*d["volume"]
@@ -122,3 +152,23 @@ class World:
 
 	def ranking(self):
 		return sorted(self.players, key=lambda player:player["inventory"]["clicks"], reverse=True)
+
+	def tick(self):
+
+		print("TICK")
+
+		for player in sample(self.players, len(self.players)):
+
+			decision = player["decision"] if player["decision"] is not None else player["default_action"]
+			data = player["data"]
+
+			if decision == "click":
+				player["inventory"]["clicks"] += 1
+			elif decision in ["buy", "sell"]:
+				self.trade(player, data)
+			elif decision == "craft":
+				self.craft(player, data["item"], data["count"])
+
+			player["decision"] = None
+
+		self.ticks += 1

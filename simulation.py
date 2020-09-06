@@ -27,17 +27,7 @@ def randomInventoryItem(player):
 
 	return choice(inventory)
 
-def getLastStat(name):
-	for i in range(len(world.stats)-1, -1, -1):
-		if name in world.stats[i]:
-			return world.stats[i][name]
 
-def getSumStat(name, lastn):
-	total = 0
-	for i in range(len(world.stats)-1, max(0, len(world.stats)-1-lastn), -1):
-		if name in world.stats[i]:
-			total += world.stats[i][name]
-	return total
 
 for step in range(1000):
 
@@ -56,18 +46,18 @@ for step in range(1000):
 			item = randomItem()
 			cost = craftable[item][0]["clicks"]
 			price = randint(cost//2, int(cost*1.5))
-			world.trade(player, "buy", {"type":"limit", "item":item, "volume":randint(1, 5), "price":price})
+			world.trade(player, {"bos":"buy", "type":"limit", "item":item, "volume":randint(1, 5), "price":price})
 		elif r < 0.1:
 			item = randomInventoryItem(player)
 			if item:
-				world.trade(player, "sell", {"type":"limit", "item":item, "volume":randint(1, 5), "price": randint(10, 20)})
+				world.trade(player, {"bos":"sell", "type":"limit", "item":item, "volume":randint(1, 5), "price": randint(10, 20)})
 		elif r < 0.11:
 			item = randomItem()
-			world.trade(player, "buy", {"type":"market", "item":item, "volume":randint(1,5)})
+			world.trade(player, {"bos":"buy", "type":"market", "item":item, "volume":randint(1,5)})
 		elif r < 0.12:
 			item = randomInventoryItem(player)
 			if item:
-				world.trade(player, "sell", {"type":"market", "item":item, "volume":randint(1,5)})
+				world.trade(player, {"bos":"sell", "type":"market", "item":item, "volume":randint(1,5)})
 		elif r < 0.4:
 			bos = choice(["buys", "sells"])
 			numorders = len(player[bos])
@@ -76,8 +66,8 @@ for step in range(1000):
 				world.cancelOrder(player, bos, index)
 		elif r < 0.8:
 			item = choice(list(craftable.keys()))
-			lastprice = getLastStat("price"+item)
-			if (lastprice is not None and lastprice > craftable[item][0]["clicks"]) or getSumStat("tradevolume", 100) < 1:
+			lastprice = world.getLastStat("price"+item)
+			if (lastprice is not None and lastprice > craftable[item][0]["clicks"]) or world.getSumStat("tradevolume", 100) < 1:
 				world.craft(player, item, randint(1,5))
 		else:
 			decision = player["default_action"]
