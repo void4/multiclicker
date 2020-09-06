@@ -91,7 +91,7 @@ class World:
 
 			if d["bos"] == "buy":
 				#buy/sell only in clicks? works in eve, but there credits arent mined
-				outstanding_buys = sum([order["price"]*order["volume"] for order in player["buys"][city]])
+				outstanding_buys = sum([order["price"]*order["volume"] for order in player["buys"].get(city, [])])
 				cost = d["price"]*d["volume"]
 
 				# kinda doesnt work if money lost in the meantime, but hey
@@ -102,7 +102,7 @@ class World:
 					player["buys"][city] = player["buys"].get(city, []) + [d]
 
 			else:
-				outstanding_sells = sum([order["volume"] for order in player["buys"][city] if order["item"] == d["item"]])
+				outstanding_sells = sum([order["volume"] for order in player["buys".get(city, []) if order["item"] == d["item"]])
 
 				if d["volume"] + outstanding_sells <= self.getStorage(player, city, d["item"]):
 					d["oid"] = self.new_oid()
