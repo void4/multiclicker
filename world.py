@@ -140,7 +140,7 @@ class World:
 						player[bos].remove(order)
 
 	def craft(self, player, item, number=1):
-		craft = craftable[item]
+		craft = getCity(player["location"])["craftable"][item]
 		if self.require(player, rmultiply(craft[0], number)):
 			player["inventory"][item] = player["inventory"].get(item, 0) + number
 		else:

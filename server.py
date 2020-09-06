@@ -82,8 +82,7 @@ def handle_json(j):
             session["player"]["sid"] = request.sid
             session["player"]["online"] = True
             sendj("login", "successful")
-            sendj("markets", list(craftable.keys()))
-            sendj("craftable", craftable)
+            sendj("markets", tradeable)
             sendj("cities", cities)
             sendj("routes", routes)
         else:
