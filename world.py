@@ -102,7 +102,7 @@ class World:
 					player["buys"][city] = player["buys"].get(city, []) + [d]
 
 			else:
-				outstanding_sells = sum([order["volume"] for order in player["buys".get(city, []) if order["item"] == d["item"]])
+				outstanding_sells = sum([order["volume"] for order in player["buys"].get(city, []) if order["item"] == d["item"]])
 
 				if d["volume"] + outstanding_sells <= self.getStorage(player, city, d["item"]):
 					d["oid"] = self.new_oid()
