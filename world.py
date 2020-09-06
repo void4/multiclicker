@@ -129,7 +129,7 @@ class World:
 		# All or nothing
 		if self.getStorage(a, city, "clicks") >= cost and self.getStorage(b, city, item) >= volume:
 			a["storage"][city]["clicks"] -= cost
-			b["storage"][city]["clicks"] += cost
+			b["storage"][city]["clicks"] = self.getStorage(b, city, "clicks") + cost
 			b["storage"][city][item] = b["storage"][city].get(item, 0) - volume
 			a["storage"][city][item] = a["storage"][city].get(item, 0) + volume
 
