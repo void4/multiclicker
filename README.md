@@ -83,3 +83,7 @@ casting, smithing, sharpening knives, weapons and armor
 fake items?
 
 change animated background to fit scene (bazaar, travelling, crafting)
+
+show routes on map
+
+ship enables direct Hurghada <-> At Tur, also faster along line than land based

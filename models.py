@@ -26,10 +26,15 @@ playerj = {
 
 
 cities = [
-    {"name": "Cairo", "coords": [142,80,190,130]},
-	{"name": "Alexandria", "coords": [10,23,60,73]},
-	{"name": "At Tur", "coords": [258,173,308,223]},
-	{"name": "Aswan", "coords": [224,386,274,436]},
+    {"name": "Cairo", "coords": [142,80,50,50]},
+	{"name": "Tanta", "coords": [112,50,50,50]},
+	{"name": "Alexandria", "coords": [10,23,50,50]},
+	{"name": "At Tur", "coords": [258,173,50,50]},
+	{"name": "Aswan", "coords": [224,386,50,50]},
+]
+
+routes = [
+	["Alexandria", "Cairo", 5],
 ]
 
 craftable = {

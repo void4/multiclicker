@@ -79,7 +79,11 @@ ga('send', 'pageview');
   background-color:rgba(50,50,50,0.2);
 }
 
-
+canvas {
+  position: absolute;
+  margin: 0;
+  pointer-events:none;
+}
 
 .actionheader {
   -webkit-user-select: none;
@@ -114,13 +118,6 @@ ga('send', 'pageview');
 
 .textcenter {
     text-align: center;
-}
-
-canvas {
-  top: 0;
-  left: 0;
-  position: absolute;;
-  z-index: -13;
 }
 
 area {
@@ -170,6 +167,8 @@ socket.on('json', function(message){
     app.craftable = data;
   } else if (type == "cities") {
     app.cities = data;
+  } else if (type == "routes") {
+    app.routes = data;
   }
 });
 
@@ -212,10 +211,10 @@ window.addEventListener("beforeunload", function() {
 
     <div>
       <h1 class="header">Map</h1>
-      <img src="img/overlay.jpg" usemap="#workmap">
+      <img id="map" src="img/overlay.jpg" usemap="#workmap">
       <map name="workmap">
-        <div v-for="city in cities">
-          <area shape="rect" v-bind:coords="city.coords" v-on:click="travel(city.name)">
+        <div v-for="city in cities"><!--[0],city.coords[1],city.coords[2],city.coords[3]-->
+          <area shape="rect" v-bind:coords="[city.coords[0], city.coords[1], city.coords[0]+50, city.coords[1]+50].join()" v-on:click="travel(city.name)">
         </div>
       </map>
     </div>
@@ -316,7 +315,6 @@ function count(array, el) {
   return count;
 }
 
-var ctx = document.getElementById("canvas").getContext("2d")
 
 var app = new Vue({
   el: '#app',
@@ -330,6 +328,7 @@ var app = new Vue({
     loc: [0, 0, 0],
     craftable: {},
     cities: [],
+    routes: [],
   },
   methods: {
     decide(name) {
@@ -371,17 +370,61 @@ var app = new Vue({
   }
 })
 
+var map = document.getElementById("map")
 
+var canvas = document.querySelector('canvas')
+var ctx = canvas.getContext("2d")
+
+function getCity(name) {
+  for (var city of app.cities) {
+    if (city.name == name) {
+      return city
+    }
+  }
+}
 
 function draw() {
-  ctx.canvas.width  = window.innerWidth;
-  ctx.canvas.height = window.innerHeight;
 
-  var w = window.innerWidth;
-  var h = window.innerHeight;
+  var rect = map.getBoundingClientRect();
+
+  canvas.style.left = rect.left + "px";
+  canvas.style.top = rect.top + "px";
+
+  ctx.canvas.width  = rect.width;
+  ctx.canvas.height = rect.height;
+
+  var city = getCity(app.player.location)
+
+  if (city) {
+    for (var route of app.routes) {
+      var other = null;
+      if (route[0]==city.name) {
+        other = getCity(route[1])
+      } else if (route[1]==city.name) {
+        other = getCity(route[0])
+      }
+
+      if (other!=null) {
+        ctx.beginPath();
+        ctx.lineWidth = "4";
+        ctx.strokeStyle = "orange";
+        ctx.moveTo(city.coords[0], city.coords[1])
+        ctx.lineTo(other.coords[0], other.coords[1]);
+        ctx.stroke();
+      }
+    }
+
+    ctx.beginPath();
+    ctx.lineWidth = "6";
+    ctx.strokeStyle = "red";
+    ctx.rect(city.coords[0], city.coords[1], city.coords[2], city.coords[3]);
+    ctx.stroke();
+  }
 
   //ctx.drawImage(window["grass"], g1, 0)
 }
+
+setInterval(draw, 100)
 
 function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect()
@@ -390,7 +433,6 @@ function getCursorPosition(canvas, event) {
     console.log("x: " + x + " y: " + y)
 }
 
-const canvas = document.querySelector('canvas')
 canvas.addEventListener('mousemove', function(e) {
     //getCursorPosition(canvas, e)
 })

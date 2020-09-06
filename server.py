@@ -85,6 +85,7 @@ def handle_json(j):
             sendj("markets", list(craftable.keys()))
             sendj("craftable", craftable)
             sendj("cities", cities)
+            sendj("routes", routes)
         else:
             sendj("login", "failed")
 
@@ -111,6 +112,10 @@ def handle_json(j):
 
     elif typ == "craft":
         world.craft(player, data["item"], data["count"])
+
+    elif typ == "travel":
+        if data in [city["name"] for city in cities]:
+            player["location"] = data
 
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)
