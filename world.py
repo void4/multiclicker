@@ -270,14 +270,45 @@ class World:
 				if player["storage"][city][item] == 0:
 					del player["storage"][city][item]
 
-	def travel(self, player, city):
+	def travel(self, player, city, mode):
 		route = getRoute(player["location"], city)
 
-		if self.require(player, route[2]):
+		cost = self.getTravelCost(player, city, mode)
+
+		print("HERE")
+		if self.require(player, cost):
 			player["location"] = city
 			return True
 
 		return False
+
+	# TODO allow multi-city routes?
+	def getTravelCost(self, player, city, mode):
+		# differ by carried weight?
+
+		route = getRoute(player["location"], city)
+
+		length = route[2][mode]
+
+		camels = self.getInventory(player, "camels")
+
+		return {"wheat": camels * 5 * length, "gold": (camels//5) * length}
+
+	def getTravelInfo(self, player, city):
+		info = {
+			"city": city,
+			"costs": {}
+		}
+		route = getRoute(player["location"], city)
+
+		if route is None:
+			# No connection
+			return None
+
+		for mode in route[2]:
+			info["costs"][mode] = self.getTravelCost(player, city, mode)
+
+		return info
 
 	def tick(self):
 

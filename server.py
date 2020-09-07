@@ -116,10 +116,13 @@ def handle_json(j):
     elif typ == "craft":
         world.craft(player, data["item"], data["count"])
 
+    elif typ == "getTravelInfo":
+        sendj("travelinfo", world.getTravelInfo(player, data))
+
     elif typ == "travel":
-        if data in [city["name"] for city in cities]:
-            if world.travel(player, data):
-                sendMarket(player, player["market"])
+        if world.travel(player, data["city"], data["mode"]):
+            sendj("city", None)
+            sendMarket(player, player["market"])
 
     elif typ == "store":
         world.store(player, data["item"], data["count"])

@@ -169,6 +169,11 @@ socket.on('json', function(message){
     app.routes = data;
   } else if (type == "items") {
     app.items = data;
+  } else if (type == "travelinfo") {
+    app.travelinfo = data;
+  } else if (type == "city") {
+    app.city = data;
+    app.travelinfo = null;
   }
 });
 
@@ -191,7 +196,7 @@ window.addEventListener("beforeunload", function() {
 <canvas id="canvas" width="640" height="480"></canvas>
 <div id="app">
 
-  <div style="display:grid;grid-template-columns:33% 33% 33%;">
+  <div style="display:grid;grid-template-columns:25% 25% 25% 25%;">
     <div>
       <div>
         <h1 class="header">Inventory</h1>
@@ -226,12 +231,27 @@ window.addEventListener("beforeunload", function() {
       </div>
     </div>
 
+    <div v-if="travelinfo">
+      <h1 class="header">Travelinfo</h1>
+      To {{ travelinfo.city }}
+      <div v-for="(costs, mode) in travelinfo.costs">
+        by {{ mode }}
+        <div v-for="(value, key) in costs">
+          {{key}}:{{value}}
+        </div>
+        <button v-on:click="travel(travelinfo.city, mode)">Depart</button>
+      </div>
+    </div>
+
+    <div v-if="!travelinfo">
+    </div>
+
     <div>
       <h1 class="header">Map</h1>
       <img id="map" src="img/overlay.jpg" usemap="#workmap">
       <map name="workmap">
         <div v-for="city in cities"><!--[0],city.coords[1],city.coords[2],city.coords[3]-->
-          <area shape="rect" v-bind:coords="[city.coords[0], city.coords[1], city.coords[0]+50, city.coords[1]+50].join()" v-on:click="travel(city.name)">
+          <area shape="rect" v-bind:coords="[city.coords[0], city.coords[1], city.coords[0]+50, city.coords[1]+50].join()" v-on:click="getTravelInfo(city.name)">
         </div>
       </map>
     </div>
@@ -349,6 +369,8 @@ var app = new Vue({
     routes: [],
     storeamount: 1,
     items: [],
+    travelinfo: null,
+    city: null,
   },
   methods: {
     decide(name) {
@@ -384,8 +406,11 @@ var app = new Vue({
     craft(item) {
       send("craft", {"item":item, "count":1})
     },
-    travel(city) {
-      send("travel", city)
+    getTravelInfo(city) {
+      send("getTravelInfo", city)
+    },
+    travel(city, mode) {
+      send("travel", {"city":city, "mode":mode})
     },
     getCity(name) {
       for (var city of app.cities) {
@@ -445,12 +470,20 @@ function draw() {
       }
 
       if (other!=null) {
-        ctx.beginPath();
-        ctx.lineWidth = "4";
-        ctx.strokeStyle = "orange";
-        ctx.moveTo(city.coords[0], city.coords[1])
-        ctx.lineTo(other.coords[0], other.coords[1]);
-        ctx.stroke();
+        for (const [mode, length] of Object.entries(route[2])) {
+          ctx.beginPath();
+
+          if (mode == "ship") {
+            ctx.lineWidth = "8";
+            ctx.strokeStyle = `rgb(0,0,${255-length})`;
+          } else  if (mode == "camel") {
+            ctx.lineWidth = "4";
+            ctx.strokeStyle = `rgb(${255-length},0,0)`;
+          }
+          ctx.moveTo(city.coords[0], city.coords[1])
+          ctx.lineTo(other.coords[0], other.coords[1]);
+          ctx.stroke();
+        }
       }
     }
 

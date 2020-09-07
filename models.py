@@ -32,7 +32,39 @@ playerj = {
 
 
 cities = [
-    {"name": "Cairo", "coords": [142,80,50,50],
+
+	{"name": "Port Said", "coords": [210,23],
+	"craftable": {
+		"fish": [{"clicks":10}],
+		"ship": [{"clicks":2000}],
+	}},
+
+	{"name": "Al Arish", "coords": [310,43],
+	"craftable": {
+		"fish": [{"clicks":10}],
+		"ship": [{"clicks":2000}],
+	}},
+
+	{"name": "Al Ismailiyyah", "coords": [210,53],
+	"craftable": {
+		"fish": [{"clicks":10}],
+		"ship": [{"clicks":2000}],
+	}},
+
+	{"name": "Alexandria", "coords": [40,23],
+	"craftable": {
+		"fish": [{"clicks":10}],
+		"ship": [{"clicks":2000}],
+	}},
+
+	{"name": "Tanta", "coords": [112,50],
+	"craftable": {
+		"meat": [{"clicks":30}],
+		"copper": [{"clicks":5}],
+		"lapis lazuli": [{"clicks":200}],
+	}},
+
+    {"name": "Cairo", "coords": [142,80],
 	"craftable": {
 		"camel": [{"clicks":10}],
 		"wheat": [{"clicks":1}],
@@ -42,34 +74,9 @@ cities = [
 		"papyrus": [{"clicks":250}],
 		"pouch": [{"clicks":10}],
 		"factory": [{"clicks":1000}],
-	}
-	},
-
-	{"name": "Tanta", "coords": [112,50,50,50],
-	"craftable": {
-		"meat": [{"clicks":30}],
-		"copper": [{"clicks":5}],
-		"lapis lazuli": [{"clicks":200}],
 	}},
 
-	{"name": "Alexandria", "coords": [10,23,50,50],
-	"craftable": {
-		"fish": [{"clicks":10}],
-		"ship": [{"clicks":2000}],
-	}},
 
-	{"name": "At Tur", "coords": [258,173,50,50],
-	"craftable": {
-		"iron": [{"clicks":30}],
-		"copper": [{"clicks":5}],
-	}},
-
-	{"name": "Aswan", "coords": [224,386,50,50],
-	"craftable": {
-		"lapis lazuli": [{"clicks":200}],
-		"silver": [{"clicks":250}],
-		"gold": [{"clicks":500}],
-	}},
 ]
 
 tradeable = set()
@@ -107,7 +114,13 @@ def getCity(name):
 			return city
 
 routes = [
-	["Alexandria", "Cairo", {"clicks": 10}],
+	["Alexandria", "Cairo", {"camel": 10, "boat":5}],
+	["Tanta", "Cairo", {"camel": 10, "boat": 1}],
+	["Tanta", "Port Said", {"camel": 15, "boat": 10}],
+	["Alexandria", "Port Said", {"boat": 10}],
+	["Tanta", "Al Ismailiyyah", {"camel": 15, "boat":8}],
+	["Suez", "Al Ismailiyyah", {"camel": 10, "boat":3}],
+	["Cairo", "Al Fayyum", {"camel": 10}],
 ]
 
 def getRoute(a, b):
