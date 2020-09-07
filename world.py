@@ -285,11 +285,13 @@ class World:
 	def getTravelCost(self, player, city, mode):
 		# differ by carried weight?
 
+		# TODO travelling without own boat either impossible or need to pay gold (depending on weight)!
+
 		route = getRoute(player["location"], city)
 
 		length = route[2][mode]
 
-		camels = self.getInventory(player, "camels")
+		camels = self.getInventory(player, "camel")
 
 		return {"wheat": camels * 5 * length, "gold": (camels//5) * length, "clicks": length}
 
