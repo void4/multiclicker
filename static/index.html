@@ -251,7 +251,7 @@ function joinDict(object, glue, separator) {
         <div v-for="(value, key) in player.inventory">
           <img v-bind:src="'img/'+key+'.png'" alt=""></img>
           {{key}}: {{value}}
-          <button v-on:click="store(key)">Store</button>
+          <button v-if="key!='clicks'" v-on:click="store(key)">Store</button>
         </div>
         Store
         <input type="radio" v-model="storeamount" id="sa1" value="1"><label for="sa1">1</label></input>
