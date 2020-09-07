@@ -18,7 +18,33 @@ ga('send', 'pageview');
 </script>
 <!-- End Google Analytics -->
 
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/aegyptusb" type="text/css"/>
 <style>
+
+@font-face {
+    font-family: 'AegyptusBold';
+        src: url('/fonts/AegyptusBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+* {
+    font-family: 'AegyptusBold';
+    font-weight: bold;
+    font-style: normal;
+    font-size: 1.05em;
+}
+
+button {
+  background-image: url("img/button.png");
+  background-size:100% 100%;
+  border:none;
+}
+
+
+button.highlight {
+  background-image: none;
+}
 
 .background {
   z-index: -1;
@@ -298,7 +324,7 @@ function joinDict(object, glue, separator) {
         <div>
           <h4 class="bigactionheader">Sells</h4>
           <div v-for="(order, index) in market.sells">
-            Price: {{order.price}} Volume: {{order.volume}}
+            Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
             <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
             <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
           </div>
@@ -308,9 +334,9 @@ function joinDict(object, glue, separator) {
           <h4 class="bigactionheader">Buys</h4>
           <!--Collate-->
           <div v-for="(order, index) in market.buys">
-            Price: {{order.price}} Volume: {{order.volume}}
-            <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
-            <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
+            Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
+            <button v-if="order.own" v-on:click="cancelOrder('buys', order.oid)">Cancel</button>
+            <button v-if="!order.own" v-on:click="acceptOrder('buys', order.oid)">Accept</button>
           </div>
         </div>
       </div>

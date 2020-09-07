@@ -214,6 +214,8 @@ tradeable = {
 
 }
 
+CURRENCY = "gold"
+
 def getCity(name):
 	for city in cities:
 		if city["name"] == name:

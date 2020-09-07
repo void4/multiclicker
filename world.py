@@ -67,7 +67,8 @@ class World:
 
 	def trade(self, player, d):
 
-		if d["volume"] <= 0 or (d["type"] == "limit" and d["price"] <= 0):# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
+		# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
+		if d["volume"] <= 0 or (d["type"] == "limit" and d["price"] <= 0):
 			return
 
 		city = player["location"]
@@ -110,7 +111,7 @@ class World:
 				cost = d["price"]*d["volume"]
 
 				# kinda doesnt work if money lost in the meantime, but hey
-				if cost + outstanding_buys <= self.getStorage(player, city, "clicks"):
+				if cost + outstanding_buys <= self.getStorage(player, city, CURRENCY):
 					#pre-deduct?
 					#(successful?) order and tx costs
 					d["oid"] = self.new_oid()
@@ -142,9 +143,9 @@ class World:
 			return False
 
 		# All or nothing
-		if self.getStorage(a, city, "clicks") >= cost and self.getStorage(b, city, item) >= volume:
-			self.addStorage(a, city, "clicks", -cost)
-			self.addStorage(b, city, "clicks", cost)
+		if self.getStorage(a, city, CURRENCY) >= cost and self.getStorage(b, city, item) >= volume:
+			self.addStorage(a, city, CURRENCY, -cost)
+			self.addStorage(b, city, CURRENCY, cost)
 			self.addStorage(b, city, item, -volume)
 			self.addStorage(a, city, item, volume)
 
@@ -195,7 +196,7 @@ class World:
 				break
 
 	def ranking(self):
-		return sorted(self.players, key=lambda player:player["inventory"]["clicks"], reverse=True)
+		return sorted(self.players, key=lambda player:player["inventory"][CURRENCY], reverse=True)#clicks
 
 	def getStorage(self, player, city, item):
 		if city not in player["storage"]:
