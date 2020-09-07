@@ -253,16 +253,27 @@ function joinDict(object, glue, separator) {
 <div id="app">
 
   <div style="display:grid;grid-template-columns:75% 25%">
+
     <div>
-      <div style="display:grid;grid-template-columns:25% 25%">
+      <div style="display:grid;grid-template-columns:20% 80%;grid-auto-flow:row;">
         <div>
+          <img src="img/time.png"></img>Time: {{player.inventory.time}}<br>
+          <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
+        </div>
+
+        <div style="display:grid;grid-template-columns:33% 33% 33%">
+
+
+
           <div>
             <h2 class="header">Inventory</h2>
-            <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
+
             <div v-for="(value, key) in player.inventory">
-              <img v-bind:src="'img/'+key+'.png'" alt=""></img>
-              {{key}}: {{value}}
-              <button v-if="key!='time'" v-on:click="store(key)">Store</button>
+              <div v-if="key!='time'">
+                <img v-bind:src="'img/'+key+'.png'" alt=""></img>
+                {{key}}: {{value}}
+                <button  v-on:click="store(key)">Store</button>
+              </div>
             </div>
 
             <!--
@@ -284,96 +295,95 @@ function joinDict(object, glue, separator) {
             </div>
           </div>
 
-        </div>
-
-        <div v-if="cities">
-          <h2 class="header">Crafting</h2>
-          <div v-for="(value, key) in getCurrentCity().craftable">
-            {{ key }} ({{ items[key]['weight'] }}w) : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:10% 90%;grid-auto-flow:row;">
-
-        <div>
-          <h2>Goods</h2>
-
-          <div v-for="(marketname, index) in markets">
-            <button v-on:click="getMarket(marketname)" v-bind:class="{highlight: marketname==market.item}">{{marketname}}</button>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:50% 50%;">
-          <h2 class="header">Local market</h2>
-
-          <div>
-            <h3 class="bigactionheader">Orders</h3>
-
-            <div>
-              <h4 class="bigactionheader">Sells</h4>
-              <div v-for="(order, index) in market.sells">
-                Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
-                <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
-                <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
-              </div>
-            </div>
-
-            <div>
-              <h4 class="bigactionheader">Buys</h4>
-              <!--Collate-->
-              <div v-for="(order, index) in market.buys">
-                Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
-                <button v-if="order.own" v-on:click="cancelOrder('buys', order.oid)">Cancel</button>
-                <button v-if="!order.own" v-on:click="acceptOrder('buys', order.oid)">Accept</button>
-              </div>
+          <div v-if="cities">
+            <h2 class="header">Crafting</h2>
+            <div v-for="(value, key) in getCurrentCity().craftable">
+              {{ key }} ({{ items[key]['weight'] }}w) : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
             </div>
           </div>
 
-          <div>
-            <h3 class="bigactionheader">Chart</h3>
-          </div>
-
-          <br>
-          <div style="display:grid;grid-template-columns:100% 50%;">
-            <h3 class="bigactionheader">Order</h3>
-            <div>
-              <h4>Place order</h4>
-              <input type="radio" v-model="order.bos" id="buy" value="buy"><label for="buy">Buy</label></input>
-              <input type="radio" v-model="order.bos" id="sell" value="sell"><label for="sell">Sell</label></input>
-              <br>
-              <select v-model="order.type">
-                <!--<option disabled value="">Please select one</option>-->
-                <option value="limit">Limit</option>
-                <option value="market">Market</option>
-              </select>Type
-              <br>
-              <input type="text" v-on:change="orderChange(0)" v-model.number="order.volume" type="number">Volume</input><br>
-              <div v-if="order.type=='limit'">
-                <input type="text" v-on:change="orderChange(1)" v-model.number="order.price" type="number">Price</input><br>
-                <input type="text" v-on:change="orderChange(2)" v-model.number="order.cost" type="number">Cost</input><br>
-              </div>
-              <div v-if="order.type=='market'">
-                <input type="text" v-model.number="order.estprice" type="number" disabled>Estimated Price</input><br>
-                <input type="text" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
-              </div>
-              <button v-on:click="submitOrder()">Submit</button><br>
-            </div>
-
-            <!--
-            <div>
-              <h4>My orders</h4>
-              <div v-for="(order, index) in orders">
-                <button onclick="cancelOrder(order.id)">Cancel</button>
-              </div>
-            </div>
-          -->
-          </div>
         </div>
       </div>
 
+        <div style="display:grid;grid-template-columns:10% 90%;grid-auto-flow:row;">
 
-    </div>
+          <div>
+            <h2>Goods</h2>
+
+            <div v-for="(marketname, index) in markets">
+              <button v-on:click="getMarket(marketname)" v-bind:class="{highlight: marketname==market.item}">{{marketname}}</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:50% 50%;">
+            <h2 class="header">Local market</h2>
+
+            <div>
+              <h3 class="bigactionheader">Orders</h3>
+
+              <div>
+                <h4 class="bigactionheader">Sells</h4>
+                <div v-for="(order, index) in market.sells">
+                  Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
+                  <button v-if="order.own" v-on:click="cancelOrder('sells', order.oid)">Cancel</button>
+                  <button v-if="!order.own" v-on:click="acceptOrder('sells', order.oid)">Accept</button>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="bigactionheader">Buys</h4>
+                <!--Collate-->
+                <div v-for="(order, index) in market.buys">
+                  Price: {{order.price}} Volume: {{order.volume}} Total: {{order.price*order.volume}}
+                  <button v-if="order.own" v-on:click="cancelOrder('buys', order.oid)">Cancel</button>
+                  <button v-if="!order.own" v-on:click="acceptOrder('buys', order.oid)">Accept</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="bigactionheader">Chart</h3>
+            </div>
+
+            <br>
+            <div style="display:grid;grid-template-columns:100% 50%;">
+              <h3 class="bigactionheader">Order</h3>
+              <div>
+                <h4>Place order</h4>
+                <input type="radio" v-model="order.bos" id="buy" value="buy"><label for="buy">Buy</label></input>
+                <input type="radio" v-model="order.bos" id="sell" value="sell"><label for="sell">Sell</label></input>
+                <br>
+                <select v-model="order.type">
+                  <!--<option disabled value="">Please select one</option>-->
+                  <option value="limit">Limit</option>
+                  <option value="market">Market</option>
+                </select>Type
+                <br>
+                <input type="text" v-on:change="orderChange(0)" v-model.number="order.volume" type="number">Volume</input><br>
+                <div v-if="order.type=='limit'">
+                  <input type="text" v-on:change="orderChange(1)" v-model.number="order.price" type="number">Price</input><br>
+                  <input type="text" v-on:change="orderChange(2)" v-model.number="order.cost" type="number">Cost</input><br>
+                </div>
+                <div v-if="order.type=='market'">
+                  <input type="text" v-model.number="order.estprice" type="number" disabled>Estimated Price</input><br>
+                  <input type="text" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
+                </div>
+                <button v-on:click="submitOrder()">Submit</button><br>
+              </div>
+
+              <!--
+              <div>
+                <h4>My orders</h4>
+                <div v-for="(order, index) in orders">
+                  <button onclick="cancelOrder(order.id)">Cancel</button>
+                </div>
+              </div>
+            -->
+            </div>
+          </div>
+        </div>
+
+      </div>
 
     <div class="travel">
       <div>
@@ -401,6 +411,7 @@ function joinDict(object, glue, separator) {
       <div v-if="!travelinfo">
       </div>
     </div>
+
   </div>
 </div>
 
