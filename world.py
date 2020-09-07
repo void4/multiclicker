@@ -67,7 +67,7 @@ class World:
 
 	def trade(self, player, d):
 
-		# or d["price"]*d["volume"] > player["inventory"]["clicks"]:
+		# or d["price"]*d["volume"] > player["inventory"][TIME]:
 		if d["volume"] <= 0 or (d["type"] == "limit" and d["price"] <= 0):
 			return
 
@@ -205,14 +205,14 @@ class World:
 		return player["storage"][city].get(item, 0)
 
 	def getItemWeight(self, item, count):
-		if item == "clicks":
+		if item == TIME:
 			return 0
 		return tradeable[item]["weight"]*count
 
 	def getInventoryWeight(self, player):
 		weight = 0
 		for item, count in player["inventory"].items():
-			if item == "clicks":
+			if item == TIME:
 				continue
 			weight += tradeable[item]["weight"]*count
 		return weight
@@ -221,7 +221,7 @@ class World:
 		return player["inventory"].get(item, 0)
 
 	def getItemWeightCapacity(self, item, count):
-		if item == "clicks":
+		if item == TIME:
 			return 0
 		if "capacity" in tradeable[item]:
 			return tradeable[item]["capacity"]*count
@@ -290,7 +290,7 @@ class World:
 
 		camels = self.getInventory(player, "camel")
 
-		return {"wheat": camels * 3 * length, "gold": (camels//5) * length, "clicks": length}
+		return {"wheat": camels * 3 * length, "gold": (camels//5) * length, TIME: length}
 
 	def getTravelInfo(self, player, city):
 		info = {
@@ -330,7 +330,7 @@ class World:
 			data = player["data"]
 
 			if decision == "click":
-				self.addInventory(player, "clicks", 1)
+				self.addInventory(player, TIME, 1)
 			elif decision in ["buy", "sell"]:
 				self.trade(player, data)
 			elif decision == "craft":

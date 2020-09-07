@@ -222,7 +222,7 @@ window.addEventListener("beforeunload", function() {
 function joinDict(object, glue, separator) {
 
   if (glue == undefined)
-    glue = ':';
+    glue = ' ';
 
   if (separator == undefined)
     separator = ',';
@@ -230,7 +230,7 @@ function joinDict(object, glue, separator) {
   var result = "";
 
   for (const [ key, value ] of Object.entries(object)) {
-    result += key + glue + value + separator
+    result += value + glue + key + separator
   }
 
   return result.slice(0, -1)
@@ -251,7 +251,7 @@ function joinDict(object, glue, separator) {
         <div v-for="(value, key) in player.inventory">
           <img v-bind:src="'img/'+key+'.png'" alt=""></img>
           {{key}}: {{value}}
-          <button v-if="key!='clicks'" v-on:click="store(key)">Store</button>
+          <button v-if="key!='time'" v-on:click="store(key)">Store</button>
         </div>
 
         <!--

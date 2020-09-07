@@ -12,7 +12,7 @@ world = World()
 for i in range(100):
 	player = deepcopy(playerj)
 	player["id"] = i
-	player["inventory"]["clicks"] = 0#randint(0,1000)
+	player["inventory"][TIME] = 0#randint(0,1000)
 	world.players.append(player)
 
 ids = Counter()
@@ -38,13 +38,13 @@ for step in range(1000):
 	stat = world.stats[-1]
 
 	for player in sample(world.players, len(world.players)):
-		stat["p"+str(player["id"])] = player["inventory"]["clicks"]
+		stat["p"+str(player["id"])] = player["inventory"][TIME]
 
 		r = random() * 5
 
 		if r < 0.05:
 			item = randomItem()
-			cost = craftable[item][0]["clicks"]
+			cost = craftable[item][0][TIME]
 			price = randint(cost//2, int(cost*1.5))
 			world.trade(player, {"bos":"buy", "type":"limit", "item":item, "volume":randint(1, 5), "price":price})
 		elif r < 0.1:
@@ -67,14 +67,14 @@ for step in range(1000):
 		elif r < 0.8:
 			item = choice(list(craftable.keys()))
 			lastprice = world.getLastStat("price"+item)
-			if (lastprice is not None and lastprice > craftable[item][0]["clicks"]) or world.getSumStat("tradevolume", 100) < 1:
+			if (lastprice is not None and lastprice > craftable[item][0][TIME]) or world.getSumStat("tradevolume", 100) < 1:
 				world.craft(player, item, randint(1,5))
 		else:
 			decision = player["default_action"]
 			if decision == "click":
-				player["inventory"]["clicks"] += 1
+				player["inventory"][TIME] += 1
 
-	stat["totalclicks"] = sum([player["inventory"]["clicks"] for player in world.players])
+	stat["totalclicks"] = sum([player["inventory"][TIME] for player in world.players])
 	for item in craftable:
 		stat["total"+item] = sum([player["inventory"].get(item, 0) for player in world.players])
 

@@ -1,3 +1,6 @@
+TIME = "time"
+CURRENCY = "gold"
+
 playerj = {
 	"id": None,
 	"name": "???",
@@ -11,7 +14,7 @@ playerj = {
 	"capacity": 0,
 
 	"inventory": {
-		"clicks": 1000,
+		TIME: 1000,
 	},
 
 	"storage": {},
@@ -35,155 +38,155 @@ cities = [
 
 	{"name": "Port Said", "coords": [201, 41],
 	"craftable": {
-		"fish": [{"clicks":3}],
-		"ship": [{"clicks":2000}],
-		"wheat": [{"clicks":5}],
-		"lapis lazuli": [{"clicks":350}],
+		"fish": [{TIME:3}],
+		"ship": [{TIME:2000}],
+		"wheat": [{TIME:5}],
+		"lapis lazuli": [{TIME:350}],
 	}},
 
 	{"name": "Al Arish", "coords": [264, 47],
 	"craftable": {
-		"fish": [{"clicks":10}],
-		"ship": [{"clicks":2000}],
-		"lapis lazuli": [{"clicks":300}],
+		"fish": [{TIME:10}],
+		"ship": [{TIME:2000}],
+		"lapis lazuli": [{TIME:300}],
 	}},
 
 	{"name": "Al Ismailiyyah", "coords": [201, 71],
 	"craftable": {
-		"fish": [{"clicks":10}],
-		"ship": [{"clicks":2000}],
+		"fish": [{TIME:10}],
+		"ship": [{TIME:2000}],
 	}},
 
 	{"name": "Alexandria", "coords": [99, 46],
 	"craftable": {
-		"fish": [{"clicks":3}],
-		"ship": [{"clicks":2000}],
-		"wheat": [{"clicks":3}],
+		"fish": [{TIME:3}],
+		"ship": [{TIME:2000}],
+		"wheat": [{TIME:3}],
 	}},
 
 	{"name": "Tanta", "coords": [145, 62],
 	"craftable": {
-		"fish": [{"clicks":5}],
-		"meat": [{"clicks":30}],
-		"copper": [{"clicks":5}],
-		"wheat": [{"clicks":1}],
-		"lapis lazuli": [{"clicks":200}],
+		"fish": [{TIME:5}],
+		"meat": [{TIME:30}],
+		"copper": [{TIME:5}],
+		"wheat": [{TIME:1}],
+		"lapis lazuli": [{TIME:200}],
 	}},
 
     {"name": "Cairo", "coords": [159, 98],
 	"craftable": {
-		"camel": [{"clicks":10}],
-		"wheat": [{"clicks":1}],
-		"beer": [{"clicks":25}],
-		"fish": [{"clicks":10}],
-		"knife": [{"clicks":10, "copper":5}],
-		"linen": [{"clicks":150}],
-		"papyrus": [{"clicks":250}],
-		"pouch": [{"clicks":10}],
-		"factory": [{"clicks":1000}],
+		"camel": [{TIME:10}],
+		"wheat": [{TIME:1}],
+		"beer": [{TIME:25}],
+		"fish": [{TIME:10}],
+		"knife": [{TIME:10, "copper":5}],
+		"linen": [{TIME:150}],
+		"papyrus": [{TIME:250}],
+		"pouch": [{TIME:10}],
+		"factory": [{TIME:1000}],
 	}},
 
 	{"name": "Suez", "coords": [212, 101],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":400}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "lapis lazuli": [{TIME:400}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
 	}},
 
 	{"name": "Al Fayyum", "coords": [137, 135],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":5}],
+	  "lapis lazuli": [{TIME:200}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:5}],
 	}},
 
 	{"name": "Bani Suwayf", "coords": [148, 148],
 	"craftable": {
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":4}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:4}],
 	}},
 
 	{"name": "At Tur", "coords": [261, 186],
 	"craftable": {
-	  "iron": [{"clicks":30}],
-	  "copper": [{"clicks":5}],
+	  "iron": [{TIME:30}],
+	  "copper": [{TIME:5}],
 	}},
 
 	{"name": "Al Minya", "coords": [131, 196],
 	"craftable": {
-	  "fish": [{"clicks":2}],
-	  "copper": [{"clicks":3}],
+	  "fish": [{TIME:2}],
+	  "copper": [{TIME:3}],
 	}},
 
 	{"name": "Sharm el-Sheikh", "coords": [290, 204],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":150}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "lapis lazuli": [{TIME:150}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
 	}},
 
 	{"name": "Hurghada", "coords": [267, 236],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":300}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "lapis lazuli": [{TIME:300}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
 	}},
 
 	{"name": "Asyut", "coords": [153, 240],
 	"craftable": {
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":3}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:3}],
 	}},
 
 	{"name": "Suhaj", "coords": [175, 271],
 	"craftable": {
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":4}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:4}],
 	}},
 
 	{"name": "Qina", "coords": [221, 286],
 	"craftable": {
-	  "papyrus": [{"clicks":250}],
-	  "fish": [{"clicks":4}],
+	  "papyrus": [{TIME:250}],
+	  "fish": [{TIME:4}],
 	}},
 
 	{"name": "Luxor", "coords": [221, 311],
 	"craftable": {
-	  "fish": [{"clicks":4}],
-	  "meat": [{"clicks":30}],
+	  "fish": [{TIME:4}],
+	  "meat": [{TIME:30}],
 	}},
 
 	{"name": "Mut", "coords": [57, 324],
 	"craftable": {
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "copper": [{"clicks":5}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "copper": [{TIME:5}],
 	}},
 
 	{"name": "Al Kharjah", "coords": [125, 324],
 	"craftable": {
-      "camel": [{"clicks":5}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+      "camel": [{TIME:5}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
 	}},
 
 	{"name": "Idfu", "coords": [231, 348],
 	"craftable": {
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":6}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:6}],
 	}},
 
 	{"name": "Aswan", "coords": [231, 391],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
-	  "fish": [{"clicks":8}],
+	  "lapis lazuli": [{TIME:200}],
+	  "silver": [{TIME:250}],
+	  "gold": [{TIME:500}],
+	  "fish": [{TIME:8}],
 	}},
 
 ]
@@ -219,8 +222,6 @@ tradeable = {
 "wheat": {"weight":1},
 
 }
-
-CURRENCY = "gold"
 
 def getCity(name):
 	for city in cities:
