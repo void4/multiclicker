@@ -276,6 +276,46 @@ routes = [
 
 ]
 
+firstnames = """Abdel
+Adel
+Ahmed
+Amr
+Anwar
+Ashraf
+Ayman
+Emad
+Ehab
+Eslam
+Fareed
+Gamal
+Hassan
+Haytham
+Hesham
+Hussein
+Ibrahim
+Ismail
+Kamal
+Jarim
+Medhat
+Mostafa
+Mohamed
+Mena
+Miro
+Nour
+Omar
+Rami
+Saeed
+Sherif
+Shoukry
+Tarek
+Waleed
+Youssef""".split("\n")
+
+from random import choice
+def generateRandomName():
+	return choice(firstnames) + " al-" + choice(firstnames)
+
+
 def getRoute(a, b):
 	for route in routes:
 		if (route[0] == a and route[1] == b) or (route[0] == b and route[1] == a):

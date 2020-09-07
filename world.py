@@ -16,6 +16,16 @@ class World:
 		player = deepcopy(playerj)
 		player["id"] = self.pid
 		self.pid += 1
+
+		while True:
+			name = generateRandomName()
+			for player in self.players:
+				if player["name"] == name:
+					break
+			else:
+				player["name"] = name
+				break
+
 		player["capacity"] = self.getWeightCapacity(player)
 		for city in cities:
 			name = city["name"]

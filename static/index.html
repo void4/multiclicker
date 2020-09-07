@@ -162,6 +162,13 @@ area {
   display: block;
   cursor: pointer;
 }
+
+.logininput {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid black;
+}
 </style>
 <script type="text/javascript" src="js/socket.io.js"></script>
 <script type="text/javascript" src="js/vue.min.js"></script>
@@ -257,6 +264,9 @@ function joinDict(object, glue, separator) {
     <div v-if="player.inventory">
       <div style="display:grid;grid-template-columns:20% 80%;grid-auto-flow:row;">
         <div>
+          <input type="text" class="logininput" id="username" v-once v-bind:value="player.name" size="6"></input>
+          <input type="password" class="logininput" id="password" size="6"></input>
+          <button v-on:click="saveLogin()">Save Login</button><br>
           <img src="img/time.png"></img>Time: {{player.inventory.time}}<br>
           <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
         </div>
@@ -513,6 +523,11 @@ var app = new Vue({
     acceptOrder(bos, oid) {
       send("acceptOrder", {"bos":bos, "oid":oid})
     },
+    saveLogin() {
+      var username = document.querySelector("#username").value
+      var password = document.querySelector("#password").value
+      send("savelogin", {"username":username, "password":password})
+    }
   }
 });
 

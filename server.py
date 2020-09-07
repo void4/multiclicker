@@ -139,6 +139,11 @@ def handle_json(j):
         world.cancelOrder(player, player["location"], data["bos"], data["oid"])
         sendMarket(player, player["market"])
 
+    elif typ == "savelogin":
+        if player["password"] is None and len(data["password"])>0:
+            player["name"] = data["username"]
+            player["password"] = data["password"]
+
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)
     socketio.run(app, host="0.0.0.0", port=9999)
