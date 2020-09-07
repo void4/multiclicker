@@ -220,7 +220,7 @@ function joinDict(object, glue, separator) {
   <div style="display:grid;grid-template-columns:25% 25% 25% 25%;">
     <div>
       <div>
-        <h1 class="header">Inventory</h1>
+        <h2 class="header">Inventory</h2>
         <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
         <div v-for="(value, key) in player.inventory">
           <img v-bind:src="'img/'+key+'.png'" alt=""></img>
@@ -237,7 +237,7 @@ function joinDict(object, glue, separator) {
       </div>
 
       <div>
-        <h1 class="header">Storage</h1>
+        <h2 class="header">Local storage</h2>
         <div v-for="(value, key) in player.storage[player.location]">
           {{key}}: {{value}}
           <button v-on:click="unstore(key)">Unstore</button>
@@ -247,14 +247,14 @@ function joinDict(object, glue, separator) {
     </div>
 
     <div v-if="cities">
-      <h1 class="header">Crafting</h1>
+      <h2 class="header">Crafting</h2>
       <div v-for="(value, key) in getCurrentCity().craftable">
         {{ key }} ({{ items[key]['weight'] }}w) : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
       </div>
     </div>
 
     <div v-if="travelinfo">
-      <h1 class="header">Travelinfo</h1>
+      <h2 class="header">Travelinfo</h2>
       To {{ travelinfo.city }}
       <div v-for="(costs, mode) in travelinfo.costs">
         by {{ mode }}
@@ -269,7 +269,7 @@ function joinDict(object, glue, separator) {
     </div>
 
     <div>
-      <h1 class="header">Map - {{ player.location }}</h1>
+      <h2 class="header">Map - {{ player.location }}</h2>
       <img id="map" src="img/overlay.jpg" usemap="#workmap">
       <map name="workmap">
         <div v-for="city in cities"><!--[0],city.coords[1],city.coords[2],city.coords[3]-->
@@ -280,7 +280,6 @@ function joinDict(object, glue, separator) {
   </div>
 
   <div style="display:grid;grid-template-columns:10% 90%;grid-auto-flow:row;">
-    <h1 class="header">Trading</h1>
 
     <div>
       <h2>Goods</h2>
