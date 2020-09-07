@@ -221,8 +221,9 @@ function joinDict(object, glue, separator) {
     <div>
       <div>
         <h1 class="header">Inventory</h1>
-        Weight: {{player.weight}}/{{player.capacity}}<br>
+        <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
         <div v-for="(value, key) in player.inventory">
+          <img v-bind:src="'img/'+key+'.png'" alt=""></img>
           {{key}}: {{value}}
           <button v-on:click="store(key)">Store</button>
         </div>
