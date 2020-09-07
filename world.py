@@ -55,11 +55,11 @@ class World:
 				delta = min(self.getStorage(player, city, item), count)
 
 				if delta > 0:
-					player["storage"][city][item] -= delta
+					self.addStorage(player, city, item, -delta)
 					count -= delta
 
 				if count > 0:
-					player["inventory"][item] -= count
+					self.addInventory(player, item, -count)
 
 			return True
 
@@ -143,10 +143,10 @@ class World:
 
 		# All or nothing
 		if self.getStorage(a, city, "clicks") >= cost and self.getStorage(b, city, item) >= volume:
-			a["storage"][city]["clicks"] -= cost
-			b["storage"][city]["clicks"] = self.getStorage(b, city, "clicks") + cost
-			b["storage"][city][item] = b["storage"][city].get(item, 0) - volume
-			a["storage"][city][item] = a["storage"][city].get(item, 0) + volume
+			self.addStorage(a, city, "clicks", -cost)
+			self.addStorage(b, city, "clicks", cost)
+			self.addStorage(b, city, item, -volume)
+			self.addStorage(a, city, item, volume)
 
 			self.stats[-1]["tradevolume"+item] += cost
 			self.stats[-1]["price"+item] = price
@@ -177,7 +177,7 @@ class World:
 
 		if self.require(player, rmultiply(craft[0], count)):
 			#player["inventory"][item] = self.getInventory(player, item) + count
-			player["storage"][player["location"]][item] = self.getStorage(player, player["location"], item) + count
+			self.addStorage(player, player["location"], item, count)
 			#player["weight"] = weight
 		else:
 			pass
@@ -245,10 +245,8 @@ class World:
 			capacityAfter = self.getWeightCapacity(player) - self.getItemWeightCapacity(item, has)
 
 			if weightAfter <= capacityAfter:
-				player["storage"][city][item] = self.getStorage(player, city, item) + has
-				player["inventory"][item] -= has
-				if player["inventory"][item] == 0:
-					del player["inventory"][item]
+				self.addStorage(player, city, item, has)
+				self.addInventory(player, item, -has)
 
 				player["weight"] = weightAfter
 				player["capacity"] = capacityAfter
@@ -262,13 +260,11 @@ class World:
 			weightAfter = self.getInventoryWeight(player) + self.getItemWeight(item, has)
 			capacityAfter = self.getWeightCapacity(player) + self.getItemWeightCapacity(item, has)
 			if weightAfter <= capacityAfter:
-				player["storage"][city][item] -= has
-				player["inventory"][item] = self.getInventory(player, item) + has
+				self.addStorage(player, city, item, -has)
+				self.addInventory(player, item, has)
+
 				player["weight"] = weightAfter
 				player["capacity"] = capacityAfter
-
-				if player["storage"][city][item] == 0:
-					del player["storage"][city][item]
 
 	def travel(self, player, city, mode):
 		route = getRoute(player["location"], city)
@@ -293,7 +289,7 @@ class World:
 
 		camels = self.getInventory(player, "camel")
 
-		return {"wheat": camels * 5 * length, "gold": (camels//5) * length, "clicks": length}
+		return {"wheat": camels * 3 * length, "gold": (camels//5) * length, "clicks": length}
 
 	def getTravelInfo(self, player, city):
 		info = {
@@ -311,6 +307,16 @@ class World:
 
 		return info
 
+	def addInventory(self, player, item, count):
+		player["inventory"][item] = self.getInventory(player, item) + count
+		if self.getInventory(player, item) == 0:
+			del player["inventory"][item]
+
+	def addStorage(self, player, city, item, count):
+		player["storage"][city][item] = self.getStorage(player, city, item) + count
+		if self.getStorage(player, city, item) == 0:
+			del player["storage"][city][item]
+
 	def tick(self):
 
 		self.stats.append(Counter())
@@ -323,7 +329,7 @@ class World:
 			data = player["data"]
 
 			if decision == "click":
-				player["inventory"]["clicks"] += 1
+				self.addInventory(player, "clicks", 1)
 			elif decision in ["buy", "sell"]:
 				self.trade(player, data)
 			elif decision == "craft":
