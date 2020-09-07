@@ -287,7 +287,7 @@ function joinDict(object, glue, separator) {
         <div v-for="(value, key) in costs">
           {{key}}:{{value}}
         </div>
-        <button v-on:click="travel(travelinfo.city, mode)">Depart</button>
+        <button v-on:click="travel(travelinfo.city, mode)">{{mode == "camel" ? "Depart" : "Set Sail"}}</button>
       </div>
     </div>
 
