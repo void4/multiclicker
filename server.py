@@ -40,7 +40,7 @@ def sendj(typ, j, *args, **kwargs):
 def handle_connect():
     print('connected', request.sid)
 
-    sendjall("randomname", world.getRandomName(), room=request.sid)
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -83,7 +83,10 @@ def handle_json(j):
     typ = j["type"]
     data = j.get("data")
 
-    if typ == "savelogin":
+    if typ == "randomname":
+        sendjall("randomname", world.getRandomName(), room=request.sid)
+
+    elif typ == "savelogin":
 
         if len(data["username"]) == 0:
             return
@@ -109,7 +112,7 @@ def handle_json(j):
 
 
 
-    player = session["player"]
+    player = session.get("player")
 
     if player is None:
         return

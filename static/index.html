@@ -209,9 +209,9 @@ socket.on('json', function(message){
     setCookie("password", password.value)
   } else if (type == "randomname") {
 
-    if (username.value=="") {
-      //username.value = data;
-    }
+    //if (username.value=="") {
+    username.value = data;
+    //}
   } else if (type == "player") {
     app.player = data;
   } else if (type == "markets") {
@@ -278,13 +278,11 @@ function joinDict(object, glue, separator) {
   <div>
     <form onsubmit="event.preventDefault();">
     <input type="text" class="logininput" id="username" autocomplete="username" size="6"></input>
-    <div v-if="!player.password">
+    <template v-if="!player.password">
+      <button v-on:click="randomName()">Random name</button><br>
       <input type="password" class="logininput" id="password" autocomplete="current-password" size="6"></input>
       <button v-on:click="saveLogin()">Save and Login</button><br>
-    </div>
-    <div v-if="player.password">
-
-    </div>
+    </template>
     </form>
   </div>
 
@@ -567,6 +565,9 @@ var app = new Vue({
       app.online = false;
       setCookie("username", "")
       setCookie("password", "")
+    },
+    randomName() {
+      send('randomname', null)
     }
   }
 });
