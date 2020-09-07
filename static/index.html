@@ -181,8 +181,8 @@ function send(type, data) {
 }
 
 socket.on('connect', function(){
-  var name = "" + new Date().getTime();
-  send("login", {"name":name})
+  //var name = "" + new Date().getTime();
+  //send("login", {"name":name})
 });
 
 socket.on('event', function(data){
@@ -196,6 +196,7 @@ socket.on('json', function(message){
   console.log(type, data)
   if (type == "login") {
     console.log("LOGIN:", data)
+    app.online = true;
   } else if (type == "player") {
     app.player = data;
   } else if (type == "markets") {
@@ -256,17 +257,28 @@ function joinDict(object, glue, separator) {
 </head>
 <body>
 <div class="background"></div>
-<canvas id="canvas" width="640" height="480"></canvas>
+
 <div id="app">
 
-  <div style="display:grid;grid-template-columns:75% 25%">
+  <div>
+    <form onsubmit="event.preventDefault();">
+    <input type="text" class="logininput" id="username" v-once v-bind:value="player.name" size="6"></input>
+    <div v-if="!player.password">
+      <input type="password" class="logininput" id="password" size="6"></input>
+      <button v-on:click="saveLogin()">Save and Login</button><br>
+    </div>
+    <div v-if="player.password">
+
+    </div>
+    </form>
+  </div>
+
+  <div v-if="player" style="display:grid;grid-template-columns:75% 25%">
 
     <div v-if="player.inventory">
       <div style="display:grid;grid-template-columns:20% 80%;grid-auto-flow:row;">
         <div>
-          <input type="text" class="logininput" id="username" v-once v-bind:value="player.name" size="6"></input>
-          <input type="password" class="logininput" id="password" size="6"></input>
-          <button v-on:click="saveLogin()">Save Login</button><br>
+          <button v-on:click="logout()">Logout</button><br>
           <img src="img/time.png"></img>Time: {{player.inventory.time}}<br>
           <img src="img/weight.png"></img>Weight: {{player.weight}}/{{player.capacity}}<br>
         </div>
@@ -396,6 +408,7 @@ function joinDict(object, glue, separator) {
       </div>
 
     <div class="travel">
+      <canvas id="canvas" width="640" height="480"></canvas>
       <div>
         <h2 class="header">Map - {{ player.location }}</h2>
         <img id="map" src="img/overlay.jpg" usemap="#workmap">
@@ -447,6 +460,7 @@ function count(array, el) {
 var app = new Vue({
   el: '#app',
   data: {
+    online: false,
     player: {},
     bos: "buy",
     orders: [],
@@ -527,6 +541,15 @@ var app = new Vue({
       var username = document.querySelector("#username").value
       var password = document.querySelector("#password").value
       send("savelogin", {"username":username, "password":password})
+    },
+    logout() {
+      send("logout", null)
+      app.player = {};
+      app.market = [];
+      app.markets = [];
+      app.orders = null;
+      app.routes = null;
+      app.online = false;
     }
   }
 });
@@ -537,6 +560,10 @@ var canvas = document.querySelector('canvas')
 var ctx = canvas.getContext("2d")
 
 function draw() {
+
+  if (app.player == null) {
+    return;
+  }
 
   var map = document.getElementById("map")
 

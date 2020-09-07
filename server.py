@@ -80,8 +80,12 @@ def handle_json(j):
     typ = j["type"]
     data = j.get("data")
 
-    if typ == "login":
-        session["player"] = world.getOrCreatePlayer(data["name"])
+    if typ == "savelogin":
+        session["player"] = world.getOrCreatePlayer(data["username"])
+
+        if session["player"]["password"] is None and len(data["password"])>0:
+            session["player"]["password"] = data["password"]
+
         if session["player"] is not None:
             session["player"]["sid"] = request.sid
             session["player"]["online"] = True
@@ -94,6 +98,8 @@ def handle_json(j):
             sendj("routes", routes)
         else:
             sendj("login", "failed")
+
+
 
     player = session["player"]
 
@@ -139,10 +145,11 @@ def handle_json(j):
         world.cancelOrder(player, player["location"], data["bos"], data["oid"])
         sendMarket(player, player["market"])
 
-    elif typ == "savelogin":
-        if player["password"] is None and len(data["password"])>0:
-            player["name"] = data["username"]
-            player["password"] = data["password"]
+
+
+    elif typ == "logout":
+        session["player"]["online"] = False
+        session["player"] = None
 
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)

@@ -19,8 +19,8 @@ class World:
 
 		while True:
 			name = generateRandomName()
-			for player in self.players:
-				if player["name"] == name:
+			for other in self.players:
+				if other["name"] == name:
 					break
 			else:
 				player["name"] = name
@@ -350,7 +350,7 @@ class World:
 
 		self.stats.append(Counter())
 
-		#print("TICK")
+		print("TICK")
 
 		for player in sample(self.players, len(self.players)):
 
