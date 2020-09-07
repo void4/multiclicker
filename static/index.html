@@ -388,20 +388,20 @@ function joinDict(object, glue, separator) {
                 <input type="radio" v-model="order.bos" id="buy" value="buy"><label for="buy">Buy</label></input>
                 <input type="radio" v-model="order.bos" id="sell" value="sell"><label for="sell">Sell</label></input>
                 <br>
-                <select v-model="order.type">
+                <select class="logininput" v-model="order.type">
                   <!--<option disabled value="">Please select one</option>-->
                   <option value="limit">Limit</option>
                   <option value="market">Market</option>
                 </select>Type
                 <br>
-                <input type="text" v-on:change="orderChange(0)" v-model.number="order.volume" type="number">Volume</input><br>
+                <input type="text" class="logininput" size="4" v-on:change="orderChange(0)" v-model.number="order.volume" type="number">Volume</input><br>
                 <div v-if="order.type=='limit'">
-                  <input type="text" v-on:change="orderChange(1)" v-model.number="order.price" type="number">Price</input><br>
-                  <input type="text" v-on:change="orderChange(2)" v-model.number="order.cost" type="number">Cost</input><br>
+                  <input type="text" class="logininput" size="4" v-on:change="orderChange(1)" v-model.number="order.price" type="number">Price</input><br>
+                  <input type="text" class="logininput" size="4" v-on:change="orderChange(2)" v-model.number="order.cost" type="number">Cost</input><br>
                 </div>
                 <div v-if="order.type=='market'">
-                  <input type="text" v-model.number="order.estprice" type="number" disabled>Estimated Price</input><br>
-                  <input type="text" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
+                  <input type="text" class="logininput" size="4" v-model.number="order.estprice" type="number" disabled>Estimated Price</input><br>
+                  <input type="text" class="logininput" size="4" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
                 </div>
                 <button v-on:click="submitOrder()">Submit</button><br>
               </div>
