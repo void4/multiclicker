@@ -189,6 +189,24 @@ window.addEventListener("beforeunload", function() {
   console.log("Disconnecting...")
   socket.disconnect();
 });
+
+function joinDict(object, glue, separator) {
+
+  if (glue == undefined)
+    glue = ':';
+
+  if (separator == undefined)
+    separator = ',';
+
+  var result = "";
+
+  for (const [ key, value ] of Object.entries(object)) {
+    result += key + glue + value + separator
+  }
+
+  return result.slice(0, -1)
+}
+
 </script>
 </head>
 <body>
@@ -227,7 +245,7 @@ window.addEventListener("beforeunload", function() {
     <div v-if="cities">
       <h1 class="header">Crafting</h1>
       <div v-for="(value, key) in getCurrentCity().craftable">
-        {{ key }} : <button v-on:click="craft(key)">{{ value[0] }}</button>
+        {{ key }} ({{ items[key]['weight'] }}w) : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
       </div>
     </div>
 

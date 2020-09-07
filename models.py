@@ -81,6 +81,9 @@ cities = [
 
 tradeable = set()
 for city in cities:
+
+	city["craftable"] = dict(sorted(city["craftable"].items()))
+
 	for item in city["craftable"]:
 		tradeable.add(item)
 
