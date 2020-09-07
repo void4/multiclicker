@@ -35,14 +35,17 @@ cities = [
 
 	{"name": "Port Said", "coords": [201, 41],
 	"craftable": {
-		"fish": [{"clicks":10}],
+		"fish": [{"clicks":3}],
 		"ship": [{"clicks":2000}],
+		"wheat": [{"clicks":5}],
+		"lapis lazuli": [{"clicks":350}],
 	}},
 
 	{"name": "Al Arish", "coords": [264, 47],
 	"craftable": {
 		"fish": [{"clicks":10}],
 		"ship": [{"clicks":2000}],
+		"lapis lazuli": [{"clicks":300}],
 	}},
 
 	{"name": "Al Ismailiyyah", "coords": [201, 71],
@@ -53,14 +56,17 @@ cities = [
 
 	{"name": "Alexandria", "coords": [99, 46],
 	"craftable": {
-		"fish": [{"clicks":10}],
+		"fish": [{"clicks":3}],
 		"ship": [{"clicks":2000}],
+		"wheat": [{"clicks":3}],
 	}},
 
 	{"name": "Tanta", "coords": [145, 62],
 	"craftable": {
+		"fish": [{"clicks":5}],
 		"meat": [{"clicks":30}],
 		"copper": [{"clicks":5}],
+		"wheat": [{"clicks":1}],
 		"lapis lazuli": [{"clicks":200}],
 	}},
 
@@ -69,6 +75,7 @@ cities = [
 		"camel": [{"clicks":10}],
 		"wheat": [{"clicks":1}],
 		"beer": [{"clicks":25}],
+		"fish": [{"clicks":10}],
 		"knife": [{"clicks":10, "copper":5}],
 		"linen": [{"clicks":150}],
 		"papyrus": [{"clicks":250}],
@@ -78,7 +85,7 @@ cities = [
 
 	{"name": "Suez", "coords": [212, 101],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
+	  "lapis lazuli": [{"clicks":400}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
 	}},
@@ -88,13 +95,14 @@ cities = [
 	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":5}],
 	}},
 
 	{"name": "Bani Suwayf", "coords": [148, 148],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":4}],
 	}},
 
 	{"name": "At Tur", "coords": [261, 186],
@@ -105,72 +113,69 @@ cities = [
 
 	{"name": "Al Minya", "coords": [131, 196],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":2}],
+	  "copper": [{"clicks":3}],
 	}},
 
 	{"name": "Sharm el-Sheikh", "coords": [290, 204],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
+	  "lapis lazuli": [{"clicks":150}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
 	}},
 
 	{"name": "Hurghada", "coords": [267, 236],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
+	  "lapis lazuli": [{"clicks":300}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
 	}},
 
 	{"name": "Asyut", "coords": [153, 240],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":3}],
 	}},
 
 	{"name": "Suhaj", "coords": [175, 271],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":4}],
 	}},
 
 	{"name": "Qina", "coords": [221, 286],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "papyrus": [{"clicks":250}],
+	  "fish": [{"clicks":4}],
 	}},
 
 	{"name": "Luxor", "coords": [221, 311],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
-	  "silver": [{"clicks":250}],
-	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":4}],
+	  "meat": [{"clicks":30}],
 	}},
 
 	{"name": "Mut", "coords": [57, 324],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "copper": [{"clicks":5}],
 	}},
 
 	{"name": "Al Kharjah", "coords": [125, 324],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
+      "camel": [{"clicks":5}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
 	}},
 
 	{"name": "Idfu", "coords": [231, 348],
 	"craftable": {
-	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":6}],
 	}},
 
 	{"name": "Aswan", "coords": [231, 391],
@@ -178,6 +183,7 @@ cities = [
 	  "lapis lazuli": [{"clicks":200}],
 	  "silver": [{"clicks":250}],
 	  "gold": [{"clicks":500}],
+	  "fish": [{"clicks":8}],
 	}},
 
 ]
