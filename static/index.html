@@ -269,7 +269,7 @@ function joinDict(object, glue, separator) {
     </div>
 
     <div>
-      <h1 class="header">Map</h1>
+      <h1 class="header">Map - {{ player.location }}</h1>
       <img id="map" src="img/overlay.jpg" usemap="#workmap">
       <map name="workmap">
         <div v-for="city in cities"><!--[0],city.coords[1],city.coords[2],city.coords[3]-->
@@ -283,7 +283,7 @@ function joinDict(object, glue, separator) {
     <h1 class="header">Trading</h1>
 
     <div>
-      <h2>Markets</h2>
+      <h2>Goods</h2>
 
       <div v-for="(marketname, index) in markets">
         <button v-on:click="getMarket(marketname)" v-bind:class="{highlight: marketname==market.item}">{{marketname}}</button>
@@ -291,7 +291,7 @@ function joinDict(object, glue, separator) {
     </div>
 
     <div style="display:grid;grid-template-columns:50% 50%;">
-      <h2 class="header">Market</h2>
+      <h2 class="header">Local market</h2>
 
       <div>
         <h3 class="bigactionheader">Orders</h3>
