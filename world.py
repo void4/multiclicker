@@ -48,9 +48,21 @@ class World:
 				total += self.stats[i][name]
 		return total
 
+	def requireStorage(self, player, d, city=None):
+		if city is None:
+			city = player["location"]
+		return all([self.getStorage(player, city, item) >= count for item, count in d.items()])
+
+	def requireInventory(self, player, d):
+		return all([self.getInventory(player, item) >= count for item, count in d.items()])
+
 	def require(self, player, d):
 		city = player["location"]
-		if all([self.getInventory(player, item)+self.getStorage(player, city, item) >= count for item, count in d.items()]):
+		return all([self.getInventory(player, item)+self.getStorage(player, city, item) >= count for item, count in d.items()])
+
+	def deduct(self, player, d):
+		if self.require(player, d):
+			city = player["location"]
 			for item, count in d.items():
 				delta = min(self.getStorage(player, city, item), count)
 
@@ -176,7 +188,7 @@ class World:
 		if weight <= capacity:#Doesn't count capacity of added camels!
 		"""
 
-		if self.require(player, rmultiply(craft[0], count)):
+		if self.deduct(player, rmultiply(craft[0], count)):
 			#player["inventory"][item] = self.getInventory(player, item) + count
 			self.addStorage(player, player["location"], item, count)
 			#player["weight"] = weight
@@ -272,7 +284,7 @@ class World:
 
 		cost = self.getTravelCost(player, city, mode)
 
-		if self.require(player, cost):
+		if self.deduct(player, cost):
 			player["location"] = city
 			return True
 
@@ -290,7 +302,13 @@ class World:
 
 		camels = self.getInventory(player, "camel")
 
-		return {"wheat": camels * 3 * length, "gold": (camels//5) * length, TIME: length}
+		costs = {"wheat": camels * 3 * length, "gold": (camels//5) * length, TIME: length}
+
+		hasboat = self.requireInventory(player, {"boat": 1}) or self.requireInventory(player, {"ship": 1})
+		if mode == "ship" and not hasboat:
+			costs["gold"] = costs.get("gold", 0) + 1 * length
+
+		return costs
 
 	def getTravelInfo(self, player, city):
 		info = {

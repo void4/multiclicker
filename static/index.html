@@ -254,7 +254,7 @@ function joinDict(object, glue, separator) {
 
   <div style="display:grid;grid-template-columns:75% 25%">
 
-    <div>
+    <div v-if="player.inventory">
       <div style="display:grid;grid-template-columns:20% 80%;grid-auto-flow:row;">
         <div>
           <img src="img/time.png"></img>Time: {{player.inventory.time}}<br>
@@ -298,7 +298,7 @@ function joinDict(object, glue, separator) {
           <div v-if="cities">
             <h2 class="header">Crafting</h2>
             <div v-for="(value, key) in getCurrentCity().craftable">
-              {{ key }} ({{ items[key]['weight'] }}w) : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
+              {{ key }} {{ key in items ? "("+items[key]['weight']+"w)" : "" }} : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
             </div>
           </div>
 
@@ -447,7 +447,7 @@ var app = new Vue({
     cities: [],
     routes: [],
     storeamount: 1,
-    items: [],
+    items: {},
     travelinfo: null,
     city: null,
   },

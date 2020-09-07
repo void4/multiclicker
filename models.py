@@ -60,6 +60,7 @@ cities = [
 	{"name": "Alexandria", "coords": [99, 46],
 	"craftable": {
 		"fish": [{TIME:3}],
+		"boat": [{TIME:500}],
 		"ship": [{TIME:2000}],
 		"wheat": [{TIME:3}],
 	}},
@@ -82,7 +83,6 @@ cities = [
 		"knife": [{TIME:10, "copper":5}],
 		"linen": [{TIME:150}],
 		"papyrus": [{TIME:250}],
-		"pouch": [{TIME:10}],
 		"factory": [{TIME:1000}],
 	}},
 
@@ -216,8 +216,8 @@ tradeable = {
 "linen": {"weight":5},
 "meat": {"weight":3},
 "papyrus": {"weight":5},
-"pouch": {"weight":5, "capacity": 20},
-"ship": {"weight":10},
+"boat": {"weight":10, "capacity":2500},
+"ship": {"weight":10, "capacity":10000},
 "silver": {"weight":1},
 "wheat": {"weight":1},
 
