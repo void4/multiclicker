@@ -40,6 +40,9 @@ ga('send', 'pageview');
 
 }
 
+#map {
+}
+
 .highlight {
   background-color: green;
 }
@@ -476,6 +479,8 @@ function draw() {
   ctx.canvas.width  = rect.width;
   ctx.canvas.height = rect.height;
 
+  ctx.drawImage(map, 0, 0)
+
   var city = app.getCurrentCity()
 
   if (city) {
@@ -512,12 +517,12 @@ function draw() {
     ctx.stroke();
   }
 
-  //ctx.drawImage(window["grass"], g1, 0)
+
 }
 
 document.addEventListener('readystatechange', event => {
     if (event.target.readyState === "interactive") {
-        setInterval(draw, 100)
+        setInterval(draw, 25)
     }
 })
 
