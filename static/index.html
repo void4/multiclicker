@@ -253,12 +253,15 @@ function joinDict(object, glue, separator) {
           {{key}}: {{value}}
           <button v-if="key!='clicks'" v-on:click="store(key)">Store</button>
         </div>
-        Store
+
+        <!--
+        Amount
         <input type="radio" v-model="storeamount" id="sa1" value="1"><label for="sa1">1</label></input>
         <input type="radio" v-model="storeamount" id="sa2" value="10"><label for="sa2">10</label></input>
         <input type="radio" v-model="storeamount" id="sa3" value="100"><label for="sa3">100</label></input>
         <input type="radio" v-model="storeamount" id="sa4" value="1000"><label for="sa4">1000</label></input>
         <input type="radio" v-model="storeamount" id="sa5" value="10000"><label for="sa5">10000</label></input>
+        -->
 
       </div>
 
@@ -452,7 +455,7 @@ var app = new Vue({
       }
     },
     craft(item) {
-      send("craft", {"item":item, "count":1})
+      send("craft", {"item":item, "count": parseInt(app.storeamount)})
     },
     getTravelInfo(city) {
       send("getTravelInfo", city)
