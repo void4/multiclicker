@@ -12,19 +12,14 @@ class World:
 		self.players = []
 		self.stats = []
 
-	def new_player(self):
+	def new_player(self, name):
+		"""must be called through getOrCreatePlayer for name check!"""
+
 		player = deepcopy(playerj)
 		player["id"] = self.pid
 		self.pid += 1
 
-		while True:
-			name = generateRandomName()
-			for other in self.players:
-				if other["name"] == name:
-					break
-			else:
-				player["name"] = name
-				break
+		player["name"] = name
 
 		player["capacity"] = self.getWeightCapacity(player)
 		for city in cities:
@@ -44,7 +39,17 @@ class World:
 			if player["name"] == name:
 				return player
 
-		return self.new_player()
+		return self.new_player(name)
+
+	def getRandomName(self):
+		# TODO: avoid DOS
+		while True:
+			name = generateRandomName()
+			for other in self.players:
+				if other["name"] == name:
+					break
+			else:
+				return name
 
 	def getLastStat(self, name):
 		for i in range(len(self.stats)-1, -1, -1):

@@ -181,6 +181,12 @@ function send(type, data) {
 }
 
 socket.on('connect', function(){
+  var username = getCookie("username");
+  var password = getCookie("password");
+
+  if (username != "" && password != "") {
+    send("savelogin", {"username":username, "password":password})
+  }
   //var name = "" + new Date().getTime();
   //send("login", {"name":name})
 });
@@ -190,6 +196,8 @@ socket.on('event', function(data){
 });
 
 socket.on('json', function(message){
+  var username = document.querySelector("#username")
+  var password = document.querySelector("#password")
   //console.log(message)
   var type = message["type"]
   var data = message["data"]
@@ -197,6 +205,13 @@ socket.on('json', function(message){
   if (type == "login") {
     console.log("LOGIN:", data)
     app.online = true;
+    setCookie("username", username.value)
+    setCookie("password", password.value)
+  } else if (type == "randomname") {
+
+    if (username.value=="") {
+      //username.value = data;
+    }
   } else if (type == "player") {
     app.player = data;
   } else if (type == "markets") {
@@ -262,9 +277,9 @@ function joinDict(object, glue, separator) {
 
   <div>
     <form onsubmit="event.preventDefault();">
-    <input type="text" class="logininput" id="username" v-once v-bind:value="player.name" size="6"></input>
+    <input type="text" class="logininput" id="username" autocomplete="username" size="6"></input>
     <div v-if="!player.password">
-      <input type="password" class="logininput" id="password" size="6"></input>
+      <input type="password" class="logininput" id="password" autocomplete="current-password" size="6"></input>
       <button v-on:click="saveLogin()">Save and Login</button><br>
     </div>
     <div v-if="player.password">
@@ -547,9 +562,11 @@ var app = new Vue({
       app.player = {};
       app.market = [];
       app.markets = [];
-      app.orders = null;
-      app.routes = null;
+      app.orders = [];
+      app.routes = [];
       app.online = false;
+      setCookie("username", "")
+      setCookie("password", "")
     }
   }
 });
@@ -638,6 +655,31 @@ canvas.addEventListener('mousemove', function(e) {
 })
 
 
+function setCookie(cname, cvalue, exdays) {
+  if (exdays==undefined) {
+    exdays = 7;
+  }
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
 
 </script>
 </body>

@@ -40,11 +40,14 @@ def sendj(typ, j, *args, **kwargs):
 def handle_connect():
     print('connected', request.sid)
 
+    sendjall("randomname", world.getRandomName(), room=request.sid)
+
 @socketio.on('disconnect')
 def handle_disconnect():
     print("disconnected", request.sid)
     player = session["player"]#getPlayer(request.sid)
-    player["online"] = False
+    if player:
+        player["online"] = False
     #TODO set offline
 
 @socketio.on('message')
@@ -81,12 +84,17 @@ def handle_json(j):
     data = j.get("data")
 
     if typ == "savelogin":
+
+        if len(data["username"]) == 0:
+            return
+
         session["player"] = world.getOrCreatePlayer(data["username"])
 
-        if session["player"]["password"] is None and len(data["password"])>0:
-            session["player"]["password"] = data["password"]
+        if session["player"] is not None and session["player"]["password"] in [None, data["password"]]:
 
-        if session["player"] is not None:
+            if session["player"]["password"] is None and len(data["password"])>0:
+                session["player"]["password"] = data["password"]
+
             session["player"]["sid"] = request.sid
             session["player"]["online"] = True
             sendj("login", "successful")

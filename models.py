@@ -14,7 +14,7 @@ playerj = {
 	"capacity": 0,
 
 	"inventory": {
-		TIME: 1000,
+		TIME: 0,
 	},
 
 	"storage": {},
