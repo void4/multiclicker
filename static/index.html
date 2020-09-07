@@ -272,7 +272,7 @@ function joinDict(object, glue, separator) {
       <img id="map" src="img/overlay.jpg" usemap="#workmap">
       <map name="workmap">
         <div v-for="city in cities"><!--[0],city.coords[1],city.coords[2],city.coords[3]-->
-          <area shape="rect" v-bind:coords="[city.coords[0], city.coords[1], city.coords[0]+50, city.coords[1]+50].join()" v-on:click="getTravelInfo(city.name)">
+          <area shape="rect" v-bind:coords="[city.coords[0]-10, city.coords[1]-10, city.coords[0]+10, city.coords[1]+10].join()" v-on:click="getTravelInfo(city.name)">
         </div>
       </map>
     </div>
