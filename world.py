@@ -275,7 +275,6 @@ class World:
 
 		cost = self.getTravelCost(player, city, mode)
 
-		print("HERE")
 		if self.require(player, cost):
 			player["location"] = city
 			return True
@@ -292,7 +291,7 @@ class World:
 
 		camels = self.getInventory(player, "camels")
 
-		return {"wheat": camels * 5 * length, "gold": (camels//5) * length}
+		return {"wheat": camels * 5 * length, "gold": (camels//5) * length, "clicks": length}
 
 	def getTravelInfo(self, player, city):
 		info = {
@@ -314,7 +313,7 @@ class World:
 
 		self.stats.append(Counter())
 
-		print("TICK")
+		#print("TICK")
 
 		for player in sample(self.players, len(self.players)):
 

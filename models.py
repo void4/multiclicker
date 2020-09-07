@@ -114,12 +114,12 @@ def getCity(name):
 			return city
 
 routes = [
-	["Alexandria", "Cairo", {"camel": 10, "boat":5}],
-	["Tanta", "Cairo", {"camel": 10, "boat": 1}],
-	["Tanta", "Port Said", {"camel": 15, "boat": 10}],
-	["Alexandria", "Port Said", {"boat": 10}],
-	["Tanta", "Al Ismailiyyah", {"camel": 15, "boat":8}],
-	["Suez", "Al Ismailiyyah", {"camel": 10, "boat":3}],
+	["Alexandria", "Cairo", {"camel": 10, "ship":5}],
+	["Tanta", "Cairo", {"camel": 10, "ship": 1}],
+	["Tanta", "Port Said", {"camel": 15, "ship": 10}],
+	["Alexandria", "Port Said", {"ship": 10}],
+	["Tanta", "Al Ismailiyyah", {"camel": 15, "ship":8}],
+	["Suez", "Al Ismailiyyah", {"camel": 10, "ship":3}],
 	["Cairo", "Al Fayyum", {"camel": 10}],
 ]
 

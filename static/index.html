@@ -474,11 +474,11 @@ function draw() {
           ctx.beginPath();
 
           if (mode == "ship") {
-            ctx.lineWidth = "8";
-            ctx.strokeStyle = `rgb(0,0,${255-length})`;
-          } else  if (mode == "camel") {
             ctx.lineWidth = "4";
-            ctx.strokeStyle = `rgb(${255-length},0,0)`;
+            ctx.strokeStyle = `rgb(0,0,${200-length})`;
+          } else if (mode == "camel") {
+            ctx.lineWidth = "8";
+            ctx.strokeStyle = `rgb(${200-length},0,0)`;
           }
           ctx.moveTo(city.coords[0], city.coords[1])
           ctx.lineTo(other.coords[0], other.coords[1]);
