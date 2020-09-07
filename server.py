@@ -64,7 +64,8 @@ def sendMarket(player, item):
         "item":item,
         "buys":buys,
         "sells":sells,
-        "lastprice": world.getLastStat("price"+item)
+        "lastprice": world.getLastStat("price"+item),
+        "currency": CURRENCY
     }
     print(response)
 
@@ -86,7 +87,9 @@ def handle_json(j):
             session["player"]["online"] = True
             sendj("login", "successful")
             sendj("items", tradeable)
-            sendj("markets", list(tradeable.keys()))
+            markets = list(tradeable.keys())
+            markets.remove(CURRENCY)
+            sendj("markets", markets)
             sendj("cities", cities)
             sendj("routes", routes)
         else:
