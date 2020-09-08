@@ -39,7 +39,7 @@ def sendj(typ, j, *args, **kwargs):
 @socketio.on('connect')
 def handle_connect():
     print('connected', request.sid)
-
+    sendjall("randomname", world.getRandomName(), room=request.sid)
 
 
 @socketio.on('disconnect')
@@ -54,6 +54,7 @@ def handle_disconnect():
 def handle_message(message):
     print('received message: ' + message)
 
+from random import randint
 def sendMarket(player, item):
 
     city = player["location"]
@@ -63,12 +64,21 @@ def sendMarket(player, item):
 
     sells = world.getMarket(city, item, "sells", "highest")
     sells = [{**order, **{"own":trader==player}} for trader, order in sells]
+
+    pricehistory = []
+    volumehistory = []
+    for i in range(1, 30):
+        pricehistory.append({ "time": f"2020-04-{i}", "value": randint(0,100) })
+        volumehistory.append({ "time": f"2020-04-{i}", "value": randint(0,25) })
+
     response = {
         "item":item,
         "buys":buys,
         "sells":sells,
         "lastprice": world.getLastStat("price"+item),
-        "currency": CURRENCY
+        "currency": CURRENCY,
+        "pricehistory": pricehistory,
+        "volumehistory": volumehistory,
     }
     print(response)
 
@@ -91,11 +101,13 @@ def handle_json(j):
         if len(data["username"]) == 0:
             return
 
-        session["player"] = world.getOrCreatePlayer(data["username"])
+        if session.get("player") is None:
+            session["player"] = world.getOrCreatePlayer(data["username"])
 
         if session["player"] is not None and session["player"]["password"] in [None, data["password"]]:
 
             if session["player"]["password"] is None and len(data["password"])>0:
+                session["player"]["name"] = data["username"]
                 session["player"]["password"] = data["password"]
 
             session["player"]["sid"] = request.sid
