@@ -1,12 +1,16 @@
 from collections import defaultdict, Counter
 from copy import deepcopy
 from random import sample
+import pickle
+from time import time
+import os
 
 from models import *
 
 class World:
 	def __init__(self):
 		self.ticks = 0
+		self.backupinterval = 60*15
 		self.pid = 0
 		self.oid = 0
 		self.players = []
@@ -353,6 +357,10 @@ class World:
 
 	def tick(self):
 
+		if self.ticks % self.backupinterval == 0:
+			os.makedirs("backups", exist_ok=True)
+			self.save(f"backups/{int(time()*1000)}_{self.ticks}.pickle")
+
 		self.stats.append(Counter())
 
 		print("TICK")
@@ -372,3 +380,12 @@ class World:
 			player["decision"] = None
 
 		self.ticks += 1
+
+	def load(self, path):
+		with open(path, "rb") as f:
+			tmp = pickle.load(f)
+		self.__dict__.update(tmp)
+
+	def save(self, path):
+		with open(path, "wb+") as f:
+			pickle.dump(self.__dict__, f)
