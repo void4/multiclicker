@@ -95,7 +95,7 @@ button.highlight {
   background-color:rgba(50,50,50,0.2);
 }
 
-canvas {
+#canvas {
   position: fixed;
   margin: 0;
   pointer-events:none;

@@ -151,7 +151,12 @@ Vue.component("marketchart", {
       lineSeries.setData(app.market.pricehistory);
       const volumeSeries = chart.addHistogramSeries({
         priceFormat: "volume",
-        color: "rgba(200,150,10,1)"
+        color: "rgba(200,150,10,1)",
+        priceScaleId: '',
+        scaleMargins: {
+          top: 0.8,
+          bottom: 0,
+        },
       })
 
       volumeSeries.setData(app.market.volumehistory)
