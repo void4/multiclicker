@@ -14,7 +14,7 @@ class World:
 		self.pid = 0
 		self.oid = 0
 		self.players = []
-		self.stats = []
+		self.tradehistory = []
 
 	def new_player(self, name):
 		"""must be called through getOrCreatePlayer for name check!"""
@@ -180,13 +180,51 @@ class World:
 			self.addStorage(b, city, item, -volume)
 			self.addStorage(a, city, item, volume)
 
-			self.stats[-1]["tradevolume"+item] += cost
-			self.stats[-1]["price"+item] = price
+			self.tradehistory.append([self.ticks, city, item, volume, price, cost])
 
 			return True
 
 		return False
 
+	def getTradeHistory(self, city, item, stat="volume", nticks=1):
+		dataindex = {
+			"volume": 3,
+			"cost": 5
+		}[stat]
+
+		history = []
+
+		lastindex = -1
+		for trade in self.tradehistory:
+			if trade[1] == city and trade[2] == item:
+				index = trade[0] // nticks
+				if index != lastindex:
+					if len(history) > 0:
+						history[-1]["value"] = sum(history[-1]["value"])
+					history.append({"time":index, "value":[]})
+					lastindex = index
+				history[-1]["value"].append(trade[dataindex])
+
+		if len(history) > 0:
+			history[-1]["value"] = sum(history[-1]["value"])
+
+		return history
+
+	def getVolumeHistory(self, city, item, nticks=1):
+		return self.getTradeHistory(city, item, "volume", nticks)
+
+	def getCostHistory(self, city, item, nticks=1):
+		return self.getTradeHistory(city, item, "cost", nticks)
+
+	def getPriceHistory(self, city, item, nticks=1):
+		volumehistory = self.getTradeHistory(city, item, "volume", nticks)
+		costhistory = self.getTradeHistory(city, item, "cost", nticks)
+
+		pricehistory = []
+		for i in range(len(volumehistory)):
+			pricehistory.append({"time":volumehistory[i]["time"], "value":costhistory[i]["value"]/volumehistory[i]["value"]})
+
+		return pricehistory
 
 	def clearOldOrders(self):
 		for player in self.players:
@@ -361,23 +399,10 @@ class World:
 			os.makedirs("backups", exist_ok=True)
 			self.save(f"backups/{int(time()*1000)}_{self.ticks}.pickle")
 
-		self.stats.append(Counter())
-
 		print("TICK")
 
 		for player in sample(self.players, len(self.players)):
-
-			decision = player["decision"] if player["decision"] is not None else player["default_action"]
-			data = player["data"]
-
-			if decision == "click":
-				self.addInventory(player, TIME, 1)
-			elif decision in ["buy", "sell"]:
-				self.trade(player, data)
-			elif decision == "craft":
-				self.craft(player, data["item"], data["count"])
-
-			player["decision"] = None
+			self.addInventory(player, TIME, 1)
 
 		self.ticks += 1
 

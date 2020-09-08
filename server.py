@@ -54,6 +54,12 @@ def handle_disconnect():
 def handle_message(message):
     print('received message: ' + message)
 
+def list_get(l, index, default=None):
+    try:
+        return l[index]
+    except IndexError:
+        return default
+
 from random import randint
 def sendMarket(player, item):
 
@@ -65,17 +71,16 @@ def sendMarket(player, item):
     sells = world.getMarket(city, item, "sells", "highest")
     sells = [{**order, **{"own":trader==player}} for trader, order in sells]
 
-    pricehistory = []
-    volumehistory = []
-    for i in range(1, 30):
-        pricehistory.append({ "time": f"2020-04-{i}", "value": randint(0,100) })
-        volumehistory.append({ "time": f"2020-04-{i}", "value": randint(0,25) })
+    pricehistory = world.getPriceHistory(city, item)
+    volumehistory = world.getVolumeHistory(city, item)#inefficent
+
+    lastprice = list_get(pricehistory, {"value":0})["value"]
 
     response = {
         "item":item,
         "buys":buys,
         "sells":sells,
-        "lastprice": world.getLastStat("price"+item),
+        "lastprice": lastprice,#TODO world.getLastStat("price"+item),
         "currency": CURRENCY,
         "pricehistory": pricehistory,
         "volumehistory": volumehistory,
@@ -114,6 +119,7 @@ def handle_json(j):
             session["player"]["online"] = True
             sendj("login", "successful")
             sendj("items", tradeable)
+            # TODO include 'has orders here' boolean in market list, for button highlighting
             markets = list(tradeable.keys())
             markets.remove(CURRENCY)
             sendj("markets", markets)
@@ -177,3 +183,5 @@ def handle_json(j):
 if __name__ == '__main__':
     socketio.start_background_task(world_tick)
     socketio.run(app, host="0.0.0.0", port=9999)
+
+# TODO backup world on server shutdown, reload from latest save
