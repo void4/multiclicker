@@ -74,7 +74,7 @@ def sendMarket(player, item):
     pricehistory = world.getPriceHistory(city, item)
     volumehistory = world.getVolumeHistory(city, item)#inefficent
 
-    lastprice = list_get(pricehistory, {"value":0})["value"]
+    lastprice = list_get(pricehistory, -1, {"value":0})["value"]
 
     response = {
         "item":item,

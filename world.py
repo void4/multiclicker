@@ -4,11 +4,15 @@ from random import sample
 import pickle
 from time import time
 import os
+from datetime import datetime, timedelta
+
+
 
 from models import *
 
 class World:
 	def __init__(self):
+		self.startdate = datetime(1200,1,1)
 		self.ticks = 0
 		self.backupinterval = 60*15
 		self.pid = 0
@@ -197,7 +201,7 @@ class World:
 		lastindex = -1
 		for trade in self.tradehistory:
 			if trade[1] == city and trade[2] == item:
-				index = trade[0] // nticks
+				index = datetime.timestamp(self.startdate + timedelta(seconds=(trade[0] // nticks)*nticks))
 				if index != lastindex:
 					if len(history) > 0:
 						history[-1]["value"] = sum(history[-1]["value"])
