@@ -92,7 +92,10 @@ ga('send', 'pageview');
               <template v-if="key in items && items[key].hasOwnProperty('weight')">
                 {{ "("+items[key]['weight']+"w)" }}
               </template>
-              : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
+              <template v-if="key in items && items[key].hasOwnProperty('capacity')">
+                {{ "("+items[key]['capacity']+"c)" }}
+              </template>
+              <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
             </div>
           </div>
 
