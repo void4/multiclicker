@@ -104,7 +104,10 @@ class World:
 
 		# or d["price"]*d["volume"] > player["inventory"][TIME]:
 		if d["volume"] <= 0 or (d["type"] == "limit" and d["price"] <= 0):
-			return
+			return "Volume and Price must be positive"
+
+		if int(d["volume"]) != d["volume"] or (d["type"] == "limit" and d["volume"]*d["price"] != int(d["volume"]*d["price"])):
+			return "Volume and Cost must be whole numbers"
 
 		city = player["location"]
 
@@ -151,13 +154,19 @@ class World:
 					#(successful?) order and tx costs
 					d["oid"] = self.new_oid()
 					player["buys"][city] = player["buys"].get(city, []) + [d]
+					return "Volume remaining, created buy order"
+				else:
+					return f"Insufficient {CURRENCY} in storage or too many outstanding buys"
 
 			else:
-				outstanding_sells = sum([order["volume"] for order in player["buys"].get(city, []) if order["item"] == d["item"]])
+				outstanding_sells = sum([order["volume"] for order in player["sells"].get(city, []) if order["item"] == d["item"]])
 
 				if d["volume"] + outstanding_sells <= self.getStorage(player, city, d["item"]):
 					d["oid"] = self.new_oid()
 					player["sells"][city] = player["sells"].get(city, []) + [d]
+					return "Volume remaining, created sell order"
+				else:
+					return f"Insufficient {d['item']} in storage or too many outstanding sells"
 
 	def getMarket(self, city, item, bos="buy", sort="lowest"):
 		market = []
@@ -172,6 +181,7 @@ class World:
 	def exchange(self, city, a, b, item, volume, price):
 		"""a gets items, b gets money"""
 		# Check a==b? -> can currently hit own orders
+		# TODO: avoid exchanging fractional camels
 		cost = volume*price
 
 		if cost <= 0:

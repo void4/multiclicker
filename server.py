@@ -74,7 +74,7 @@ def sendMarket(player, item):
     pricehistory = world.getPriceHistory(city, item)
     volumehistory = world.getVolumeHistory(city, item)#inefficent
 
-    lastprice = list_get(pricehistory, -1, {"value":0})["value"]
+    lastprice = list_get(pricehistory, -1, {"value":None})["value"]
 
     response = {
         "item":item,
@@ -148,8 +148,9 @@ def handle_json(j):
         sendMarket(player, data)
 
     elif typ == "order":
-        world.trade(player, data)
+        result = world.trade(player, data)
         sendMarket(player, data["item"])
+        sendj("info", result)
 
     elif typ == "craft":
         world.craft(player, data["item"], data["count"])

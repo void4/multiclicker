@@ -199,6 +199,7 @@ for city in cities:
 #for item in tradeable:
 #	print("\""+item+"\": {\"weight\":},")
 
+#TODO disallow fractional camels
 tradeable = {
 "beer": {"weight":1},
 "camel": {"weight":0, "capacity":250},

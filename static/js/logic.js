@@ -52,6 +52,7 @@ socket.on('json', function(message){
     app.order.price = data["lastprice"]
     app.order.estprice = data["lastprice"]
     app.order.item = data["item"]
+    app.info = null;
   } else if (type == "cities") {
     app.cities = data;
   } else if (type == "routes") {
@@ -63,6 +64,8 @@ socket.on('json', function(message){
   } else if (type == "city") {
     app.city = data;
     app.travelinfo = null;
+  } else if (type == "info") {
+    app.info = data;
   }
 });
 
@@ -188,6 +191,7 @@ var app = new Vue({
     items: {},
     travelinfo: null,
     city: null,
+    info: null,
   },
   /*
   watch: {

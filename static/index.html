@@ -160,7 +160,11 @@ ga('send', 'pageview');
                   <input type="text" class="logininput" size="4" v-model.number="order.estcost" type="number" disabled>Estimated Cost</input><br>
                 </div>
                 <button v-on:click="submitOrder()">Submit</button><br>
+                <div v-if="info">
+                  {{info}}
+                </div>
               </div>
+
 
               <!--
               <div>
