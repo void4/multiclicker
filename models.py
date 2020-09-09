@@ -79,7 +79,6 @@ cities = [
 		"knife": [{TIME:10, "copper":5}],
 		"linen": [{TIME:150}],
 		"papyrus": [{TIME:250}],
-		"factory": [{TIME:1000}],
 	}},
 
 	{"name": "Suez", "coords": [212, 101],
@@ -204,7 +203,6 @@ tradeable = {
 "beer": {"weight":1},
 "camel": {"capacity":250},
 "copper": {"weight":5},
-"factory": {"weight":10},
 "fish": {"weight":1},
 "gold": {"weight":1},
 "iron": {"weight":5},
@@ -213,8 +211,8 @@ tradeable = {
 "linen": {"weight":5},
 "meat": {"weight":3},
 "papyrus": {"weight":5},
-"boat": {"weight":10, "capacity":2500},
-"ship": {"weight":10, "capacity":10000},
+"boat": {"capacity":2500},
+"ship": {"capacity":10000},
 "silver": {"weight":1},
 "wheat": {"weight":1},
 
