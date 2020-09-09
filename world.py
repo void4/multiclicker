@@ -111,6 +111,8 @@ class World:
 
 		city = player["location"]
 
+		initialvolume = d["volume"]
+
 		if d["bos"] == "sell":
 			market = self.getMarket(city, d["item"], "buys", "highest")
 		else:
@@ -141,6 +143,9 @@ class World:
 					if d["volume"] == 0:
 						break
 
+		if d["type"] == "market":
+			return f"{initialvolume-d['volume']}/{initialvolume} filled"
+
 		if d["type"] == "limit" and d["volume"] > 0:
 
 			if d["bos"] == "buy":
@@ -167,6 +172,8 @@ class World:
 					return "Volume remaining, created sell order"
 				else:
 					return f"Insufficient {d['item']} in storage or too many outstanding sells"
+
+		return f"{initialvolume-d['volume']}/{initialvolume} filled"
 
 	def getMarket(self, city, item, bos="buy", sort="lowest"):
 		market = []

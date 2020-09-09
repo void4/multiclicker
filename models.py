@@ -37,7 +37,7 @@ cities = [
 		"fish": [{TIME:3}],
 		"ship": [{TIME:2000}],
 		"wheat": [{TIME:5}],
-		"lapis lazuli": [{TIME:350}],
+		"lapis lazuli": [{TIME:110}],
 	}},
 
 	{"name": "Al Arish", "coords": [264, 47],
@@ -72,7 +72,7 @@ cities = [
 
     {"name": "Cairo", "coords": [159, 98],
 	"craftable": {
-		"camel": [{TIME:10}],
+		"camel": [{TIME:600}],
 		"wheat": [{TIME:1}],
 		"beer": [{TIME:25}],
 		"fish": [{TIME:10}],
@@ -83,23 +83,23 @@ cities = [
 
 	{"name": "Suez", "coords": [212, 101],
 	"craftable": {
-	  "lapis lazuli": [{TIME:400}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "lapis lazuli": [{TIME:100}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	}},
 
 	{"name": "Al Fayyum", "coords": [137, 135],
 	"craftable": {
-	  "lapis lazuli": [{TIME:200}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "lapis lazuli": [{TIME:90}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:5}],
 	}},
 
 	{"name": "Bani Suwayf", "coords": [148, 148],
 	"craftable": {
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:4}],
 	}},
 
@@ -117,35 +117,35 @@ cities = [
 
 	{"name": "Sharm el-Sheikh", "coords": [290, 204],
 	"craftable": {
-	  "lapis lazuli": [{TIME:150}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "lapis lazuli": [{TIME:70}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	}},
 
 	{"name": "Hurghada", "coords": [267, 236],
 	"craftable": {
-	  "lapis lazuli": [{TIME:300}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "lapis lazuli": [{TIME:80}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	}},
 
 	{"name": "Asyut", "coords": [153, 240],
 	"craftable": {
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:3}],
 	}},
 
 	{"name": "Suhaj", "coords": [175, 271],
 	"craftable": {
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:4}],
 	}},
 
 	{"name": "Qina", "coords": [221, 286],
 	"craftable": {
-	  "papyrus": [{TIME:250}],
+	  "papyrus": [{TIME:20}],
 	  "fish": [{TIME:4}],
 	}},
 
@@ -157,30 +157,30 @@ cities = [
 
 	{"name": "Mut", "coords": [57, 324],
 	"craftable": {
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "copper": [{TIME:5}],
 	}},
 
 	{"name": "Al Kharjah", "coords": [125, 324],
 	"craftable": {
-      "camel": [{TIME:5}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+      "camel": [{TIME:600}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	}},
 
 	{"name": "Idfu", "coords": [231, 348],
 	"craftable": {
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:6}],
 	}},
 
 	{"name": "Aswan", "coords": [231, 391],
 	"craftable": {
-	  "lapis lazuli": [{TIME:200}],
-	  "silver": [{TIME:250}],
-	  "gold": [{TIME:500}],
+	  "lapis lazuli": [{TIME:75}],
+	  "silver": [{TIME:25}],
+	  "gold": [{TIME:50}],
 	  "fish": [{TIME:8}],
 	}},
 
