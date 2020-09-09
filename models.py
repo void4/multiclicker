@@ -202,7 +202,7 @@ for city in cities:
 #TODO disallow fractional camels
 tradeable = {
 "beer": {"weight":1},
-"camel": {"weight":0, "capacity":250},
+"camel": {"capacity":250},
 "copper": {"weight":5},
 "factory": {"weight":10},
 "fish": {"weight":1},

@@ -34,6 +34,11 @@ socket.on('json', function(message){
   } else if (type == "randomname") {
     var cookie_username = getCookie("username");
     var cookie_password = getCookie("password");
+
+    if (username == null) {
+      return;
+    }
+
     if (cookie_username=="" && username.value=="") {
       console.log(data)
       username.value = data;
@@ -286,7 +291,6 @@ var app = new Vue({
 });
 
 
-
 var canvas = document.querySelector('canvas')
 var ctx = canvas.getContext("2d")
 
@@ -295,6 +299,14 @@ function draw() {
   if (app.player == null) {
     return;
   }
+
+
+
+  if (canvas == null) {
+    return;
+  }
+
+
 
   var map = document.getElementById("map")
 
@@ -363,10 +375,6 @@ function getCursorPosition(canvas, event) {
     const y = event.clientY - rect.top
     console.log("x: " + x + " y: " + y)
 }
-
-canvas.addEventListener('mousemove', function(e) {
-    //getCursorPosition(canvas, e)
-})
 
 
 function setCookie(cname, cvalue, exdays) {

@@ -45,7 +45,7 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     print("disconnected", request.sid)
-    player = session["player"]#getPlayer(request.sid)
+    player = session.get("player", None)#getPlayer(request.sid)
     if player:
         player["online"] = False
     #TODO set offline

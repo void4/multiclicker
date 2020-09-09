@@ -290,14 +290,12 @@ class World:
 	def getItemWeight(self, item, count):
 		if item == TIME:
 			return 0
-		return tradeable[item]["weight"]*count
+		return tradeable[item].get("weight", 0)*count
 
 	def getInventoryWeight(self, player):
 		weight = 0
 		for item, count in player["inventory"].items():
-			if item == TIME:
-				continue
-			weight += tradeable[item]["weight"]*count
+			weight += self.getItemWeight(item, count)
 		return weight
 
 	def getInventory(self, player, item):

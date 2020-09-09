@@ -88,7 +88,11 @@ ga('send', 'pageview');
           <div v-if="cities">
             <h2 class="header">Crafting</h2>
             <div v-for="(value, key) in getCurrentCity().craftable">
-              {{ key }} {{ key in items ? "("+items[key]['weight']+"w)" : "" }} : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
+              {{ key }}
+              <template v-if="key in items && items[key].hasOwnProperty('weight')">
+                {{ "("+items[key]['weight']+"w)" }}
+              </template>
+              : <button v-on:click="craft(key)">{{ joinDict(value[0]) }}</button>
             </div>
           </div>
 
