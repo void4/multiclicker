@@ -2,6 +2,7 @@ from collections import defaultdict, Counter
 import json
 from time import time
 import os
+import atexit
 
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, send, emit
@@ -26,8 +27,8 @@ def world_tick():
 
 
 world = World()
-print("Backup interval:", world.backupinterval)
 world.loadlatest()
+print("Backup interval:", world.options["backupinterval"])
 
 def sendjall(typ, j, *args, **kwargs):
     #for player in world.players:
@@ -183,10 +184,11 @@ def handle_json(j):
         session["player"]["online"] = False
         session["player"] = None
 
+def save_world():
+    world.save()
+
 if __name__ == '__main__':
-    try:
-        socketio.start_background_task(world_tick)
-        socketio.run(app, host="0.0.0.0", port=9999)
-    except KeyboardInterrupt:
-        world.save()
+    atexit.register(save_world)
+    socketio.start_background_task(world_tick)
+    socketio.run(app, host="0.0.0.0", port=9999)
 # TODO backup world on server shutdown, reload from latest save

@@ -15,7 +15,9 @@ class World:
 	def __init__(self):
 		self.startdate = datetime(1200,1,1)
 		self.ticks = 0
-		self.backupinterval = 60
+		self.options = {
+			"backupinterval" : 60
+		}
 		self.pid = 0
 		self.oid = 0
 		self.players = []
@@ -415,10 +417,10 @@ class World:
 
 	def tick(self):
 
-		if self.ticks > 0 and self.ticks % self.backupinterval == 0:
+		if self.ticks > 0 and self.ticks % self.options["backupinterval"] == 0:
 			self.save()
 
-		print("TICK")
+		print("TICK", self.ticks)
 
 		for player in sample(self.players, len(self.players)):
 			self.addInventory(player, TIME, 1)
@@ -439,8 +441,13 @@ class World:
 		os.makedirs(BACKUPDIR, exist_ok=True)
 
 		print("Saving", path)
+
+		data = deepcopy(self.__dict__)
+
+		data.pop("options", None)
+
 		with open(path, "wb+") as f:
-			pickle.dump(self.__dict__, f)
+			pickle.dump(data, f)
 
 	def loadlatest(self):
 		backups = sorted(glob(os.path.join(BACKUPDIR, "*.pickle")), key=lambda path:int(path.split(os.path.sep)[-1].split("_")[0]))
