@@ -26,6 +26,7 @@ def world_tick():
 
 
 world = World()
+print("Backup interval:", world.backupinterval)
 world.loadlatest()
 
 def sendjall(typ, j, *args, **kwargs):
