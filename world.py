@@ -5,16 +5,17 @@ import pickle
 from time import time
 import os
 from datetime import datetime, timedelta
-
-
+from glob import glob
 
 from models import *
+
+BACKUPDIR = "backups"
 
 class World:
 	def __init__(self):
 		self.startdate = datetime(1200,1,1)
 		self.ticks = 0
-		self.backupinterval = 60*15
+		self.backupinterval = 60
 		self.pid = 0
 		self.oid = 0
 		self.players = []
@@ -414,9 +415,8 @@ class World:
 
 	def tick(self):
 
-		if self.ticks % self.backupinterval == 0:
-			os.makedirs("backups", exist_ok=True)
-			self.save(f"backups/{int(time()*1000)}_{self.ticks}.pickle")
+		if self.ticks > 0 and self.ticks % self.backupinterval == 0:
+			self.save()
 
 		print("TICK")
 
@@ -426,10 +426,25 @@ class World:
 		self.ticks += 1
 
 	def load(self, path):
+		print("Loading", path)
 		with open(path, "rb") as f:
 			tmp = pickle.load(f)
 		self.__dict__.update(tmp)
 
-	def save(self, path):
+	def save(self, path=None):
+
+		if path is None:
+			path = os.path.join(BACKUPDIR, f"{int(time()*1000)}_{self.ticks}.pickle")
+
+		os.makedirs(BACKUPDIR, exist_ok=True)
+
+		print("Saving", path)
 		with open(path, "wb+") as f:
 			pickle.dump(self.__dict__, f)
+
+	def loadlatest(self):
+		backups = sorted(glob(os.path.join(BACKUPDIR, "*.pickle")), key=lambda path:int(path.split(os.path.sep)[-1].split("_")[0]))
+		if len(backups) > 0:
+			self.load(backups[-1])
+		else:
+			print("No save found, starting new")

@@ -26,6 +26,7 @@ def world_tick():
 
 
 world = World()
+world.loadlatest()
 
 def sendjall(typ, j, *args, **kwargs):
     #for player in world.players:
@@ -182,7 +183,9 @@ def handle_json(j):
         session["player"] = None
 
 if __name__ == '__main__':
-    socketio.start_background_task(world_tick)
-    socketio.run(app, host="0.0.0.0", port=9999)
-
+    try:
+        socketio.start_background_task(world_tick)
+        socketio.run(app, host="0.0.0.0", port=9999)
+    except KeyboardInterrupt:
+        world.save()
 # TODO backup world on server shutdown, reload from latest save
