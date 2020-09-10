@@ -256,11 +256,20 @@ var app = new Vue({
     getCurrentCity() {
       return app.getCity(app.player.location)
     },
+    reloadTravelInfo() {
+      if (app.travelinfo != null) {
+        send("getTravelInfo", app.travelinfo.city)
+      }
+    },
     store(key) {
       send("store", {"item":key, "count":parseInt(app.storeamount)})
+      // Reload travelinfo on inventory change
+      app.reloadTravelInfo()
     },
     unstore(key) {
       send("unstore", {"item":key, "count":parseInt(app.storeamount)})
+      // Reload travelinfo on inventory change
+      app.reloadTravelInfo()
     },
     cancelOrder(bos, oid) {
       send("cancelOrder", {"bos":bos, "oid":oid})
